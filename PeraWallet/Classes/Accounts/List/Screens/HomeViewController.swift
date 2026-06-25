@@ -1350,8 +1350,7 @@ extension HomeViewController {
     private var alertItems: [any AlertItem] {
         [
             makeCopyAddressIntroductionAlertItem(),
-            makeSwapIntroductionAlertItem(),
-            makeBuyGiftCardsWithCryptoIntroductionAlertItem()
+            makeSwapIntroductionAlertItem()
         ]
     }
 
