@@ -24,30 +24,20 @@ struct HomeQuickActionsViewTheme:
     var spacingBetweenActions: LayoutMetric
     var actionWidth: LayoutMetric
     var actionSpacingBetweenIconAndTitle: LayoutMetric
-    var stakeAction: ButtonStyle
-    var swapAction: ButtonStyle
     var sendAction: ButtonStyle
-    var fundAction: ButtonStyle
+    var receiveAction: ButtonStyle
 
     init(_ family: LayoutFamily) {
         self.spacingBetweenActions = 16
         self.actionSpacingBetweenIconAndTitle = 12
         self.actionWidth = 64
-        self.stakeAction = [
-            .icon(Self.makeActionIcon(icon: "stake-quick-icon")),
-            .title(Self.makeActionTitle(title: String(localized: "title-staking")))
-        ]
-        self.swapAction = [
-            .icon(Self.makeActionIcon(icon: "swap-icon")),
-            .title(Self.makeActionTitle(title: String(localized: "title-swap")))
-        ]
         self.sendAction = [
             .icon(Self.makeActionIcon(icon: "send-icon")),
             .title(Self.makeActionTitle(title: String(localized: "quick-actions-send-title")))
         ]
-        self.fundAction = [
-            .icon(Self.makeActionIcon(icon: "fund-icon-badge")),
-            .title(Self.makeActionTitle(title: String(localized: "title-fund")))
+        self.receiveAction = [
+            .icon(Self.makeActionIcon(icon: "receive-icon")),
+            .title(Self.makeActionTitle(title: String(localized: "quick-actions-receive-title")))
         ]
     }
 }

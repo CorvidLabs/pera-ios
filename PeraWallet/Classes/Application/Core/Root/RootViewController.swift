@@ -128,25 +128,33 @@ extension RootViewController {
             NavigationContainer(rootViewController: homeViewController)
         )
         
-        let discoverViewController = DiscoverHomeScreen(configuration: appConfiguration.all())
-        let discoverTab = DiscoverTabBarItem(
-            NavigationContainer(rootViewController: discoverViewController)
-        )
-        
-        let swapVC = SwapViewController(configuration: appConfiguration.all())
-        let swapTab = SwapTabBarItem(NavigationContainer(rootViewController: swapVC))
-        
         let menuVC = MenuViewController(configuration: appConfiguration.all())
         let menuTab = MenuTabBarItem(NavigationContainer(rootViewController: menuVC))
-        
-        let fundVC = FundInAppBrowserScreen(configuration: appConfiguration.all())
-        let fundTab = FundTabBarItem(NavigationContainer(rootViewController: fundVC))
 
+        // Corvid Nevermore — give the flagship NFT collection its own tab.
+        let collectiblesVC = CollectiblesViewController(
+            query: CollectibleListQuery(
+                filteringBy: .init(),
+                sortingBy: appConfiguration.sharedDataController.selectedCollectibleSortingAlgorithm
+            ),
+            dataController: CollectibleListLocalDataController(
+                galleryAccount: .all,
+                sharedDataController: appConfiguration.sharedDataController
+            ),
+            copyToClipboardController: ALGCopyToClipboardController(
+                toastPresentationController: appConfiguration.toastPresentationController
+            ),
+            configuration: appConfiguration.all()
+        )
+        let collectiblesTab = CollectiblesTabBarItem(
+            NavigationContainer(rootViewController: collectiblesVC)
+        )
+
+        // Curated/minimal navigation: Home · Nevermore · Menu.
+        // (Pera's Discover, Swap, and Fund tabs are intentionally trimmed.)
         mainContainer.items = [
             homeTab,
-            discoverTab,
-            swapTab,
-            fundTab,
+            collectiblesTab,
             menuTab
         ]
         setNeedsDiscoverTabBarItemUpdateIfNeeded()

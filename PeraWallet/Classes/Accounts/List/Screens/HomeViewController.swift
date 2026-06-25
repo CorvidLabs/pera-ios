@@ -577,32 +577,17 @@ extension HomeViewController {
     private func linkInteractors(
         _ cell: HomeQuickActionsCell
     ) {
-        cell.startObserving(event: .swap) {
-            [weak self] in
-            guard let self, let rootViewController = UIApplication.shared.rootViewController() else { return }
-            analytics.track(.recordHomeScreen(type: .swap))
-            rootViewController.launch(tab: .swap)
-        }
-        
-        cell.startObserving(event: .stake) {
-            [weak self] in
-            guard let self, let rootViewController = UIApplication.shared.rootViewController() else { return }
-            analytics.track(.recordHomeScreen(type: .stake))
-            open(.staking, by: .push)
-        }
-        
-        cell.startObserving(event: .fund) {
-            [weak self] in
-            guard let self, let rootViewController = UIApplication.shared.rootViewController() else { return }
-            analytics.track(.recordHomeScreen(type: .fund))
-            rootViewController.launch(tab: .fund)
-        }
-
         cell.startObserving(event: .send) {
             [weak self] in
             guard let self else { return }
             analytics.track(.recordHomeScreen(type: .send))
             sendTransactionFlowCoordinator.launch()
+        }
+
+        cell.startObserving(event: .receive) {
+            [weak self] in
+            guard let self else { return }
+            receiveTransactionFlowCoordinator.launch()
         }
     }
     

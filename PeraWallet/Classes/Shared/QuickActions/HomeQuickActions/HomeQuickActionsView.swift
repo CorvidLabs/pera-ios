@@ -24,17 +24,13 @@ final class HomeQuickActionsView:
     ListReusable,
     UIInteractable {
     private(set) var uiInteractions: [Event: MacaroonUIKit.UIInteraction] = [
-        .swap: TargetActionInteraction(),
-        .stake: TargetActionInteraction(),
-        .fund: TargetActionInteraction(),
-        .send: TargetActionInteraction()
+        .send: TargetActionInteraction(),
+        .receive: TargetActionInteraction()
     ]
 
     private lazy var contentView = HStackView()
-    private lazy var swapActionView = makeActionView()
-    private lazy var fundActionView = makeActionView()
-    private lazy var stakeActionView = makeActionView()
-    private lazy var sendActionView =  makeActionView()
+    private lazy var sendActionView = makeActionView()
+    private lazy var receiveActionView = makeActionView()
 
     private var theme: HomeQuickActionsViewTheme!
 
@@ -53,31 +49,19 @@ final class HomeQuickActionsView:
         fittingIn size: CGSize
     ) -> CGSize {
         let maxActionSize = CGSize((size.width, .greatestFiniteMagnitude))
-        let stakeActionSize = calculateActionPreferredSize(
-            theme,
-            for: theme.stakeAction,
-            fittingIn: maxActionSize
-        )
         let sendActionSize = calculateActionPreferredSize(
             theme,
             for: theme.sendAction,
             fittingIn: maxActionSize
         )
-        let swapActionSize = calculateActionPreferredSize(
+        let receiveActionSize = calculateActionPreferredSize(
             theme,
-            for: theme.swapAction,
-            fittingIn: maxActionSize
-        )
-        let fundActionSize = calculateActionPreferredSize(
-            theme,
-            for: theme.fundAction,
+            for: theme.receiveAction,
             fittingIn: maxActionSize
         )
         let preferredHeight = [
-            stakeActionSize.height,
-            swapActionSize.height,
             sendActionSize.height,
-            fundActionSize.height
+            receiveActionSize.height
         ].max()!
         return CGSize((size.width, min(preferredHeight.ceil(), size.height)))
     }
@@ -115,55 +99,8 @@ extension HomeQuickActionsView {
             $0.trailing <= 0
         }
 
-        addSwapAction(theme)
-        addFundAction(theme)
-        addStakeAction(theme)
         addSendAction(theme)
-    }
-
-    private func addSwapAction(_ theme: HomeQuickActionsViewTheme) {
-        swapActionView.customizeAppearance(theme.swapAction)
-        customizeAction(
-            swapActionView,
-            theme
-        )
-
-        contentView.addArrangedSubview(swapActionView)
-
-        startPublishing(
-            event: .swap,
-            for: swapActionView
-        )
-    }
-    
-    private func addFundAction(_ theme: HomeQuickActionsViewTheme) {
-        fundActionView.customizeAppearance(theme.fundAction)
-        customizeAction(
-            fundActionView,
-            theme
-        )
-
-        contentView.addArrangedSubview(fundActionView)
-
-        startPublishing(
-            event: .fund,
-            for: fundActionView
-        )
-    }
-
-    private func addStakeAction(_ theme: HomeQuickActionsViewTheme) {
-        stakeActionView.customizeAppearance(theme.stakeAction)
-        customizeAction(
-            stakeActionView,
-            theme
-        )
-
-        contentView.addArrangedSubview(stakeActionView)
-
-        startPublishing(
-            event: .stake,
-            for: stakeActionView
-        )
+        addReceiveAction(theme)
     }
 
     private func addSendAction(_ theme: HomeQuickActionsViewTheme) {
@@ -178,6 +115,21 @@ extension HomeQuickActionsView {
         startPublishing(
             event: .send,
             for: sendActionView
+        )
+    }
+
+    private func addReceiveAction(_ theme: HomeQuickActionsViewTheme) {
+        receiveActionView.customizeAppearance(theme.receiveAction)
+        customizeAction(
+            receiveActionView,
+            theme
+        )
+
+        contentView.addArrangedSubview(receiveActionView)
+
+        startPublishing(
+            event: .receive,
+            for: receiveActionView
         )
     }
 
@@ -203,10 +155,7 @@ extension HomeQuickActionsView {
 
 extension HomeQuickActionsView {
     enum Event {
-        case swap
-        case fund
-        case stake
         case send
-        case transfer
+        case receive
     }
 }
