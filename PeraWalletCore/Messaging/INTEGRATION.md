@@ -29,6 +29,14 @@ in-repo edit):
 Until one of these lands, the feature stays flagged off and the package cannot be
 added. Everything else (code, derivation, protocol) is verified independently.
 
+**The option-1 fix is verified sound.** In an isolated SwiftPM package,
+swift-algochat + a MnemonicSwift patched to `swift-crypto < 4.0` **build, link,
+and run together** on swift-crypto 3.x, and MnemonicSwift's **own 24 crypto tests
+pass** against swift-crypto 3.x (0 failures). So the conflict is resolved by a
+single version-bound change with no cryptographic behavior change — the remaining
+work is mechanical (apply the fork, wire the packages, build), gated only on the
+human decision to change a crypto dependency.
+
 ## 1. Add the swift-algochat package (Xcode — do NOT hand-edit project.pbxproj)
 
 In Xcode: **File ▸ Add Package Dependencies…**, enter
