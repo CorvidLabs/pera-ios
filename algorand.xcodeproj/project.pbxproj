@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		10A77912DAF6269145B2165D /* AlgoChatKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D0E598A5F978D44E0D01241 /* AlgoChatKit.framework */; };
 		174A0F3C28EF17FD00D44019 /* PasswordMigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174A0F3B28EF17FD00D44019 /* PasswordMigrationTests.swift */; };
 		1798D9B7294B18E300A7B2AA /* DiscoverSocialMediaRouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1798D9B6294B18E300A7B2AA /* DiscoverSocialMediaRouterTests.swift */; };
 		17B7E1CB27DF4D0F00A89025 /* DMMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 17B7E1CA27DF4D0E00A89025 /* DMMono-Regular.ttf */; };
@@ -157,6 +158,7 @@
 		2BD36E172682474800C57728 /* AlgorandSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD36E162682474800C57728 /* AlgorandSDKTests.swift */; };
 		2BEEBFA329A3D06000DDD988 /* WalletConnectV1SessionValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BEEBF9B29A3BD9900DDD988 /* WalletConnectV1SessionValidatorTests.swift */; };
 		2BEEBFA429A3D06500DDD988 /* WalletConnectV2SessionValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BEEBF9F29A3CD7800DDD988 /* WalletConnectV2SessionValidatorTests.swift */; };
+		481D31276E3D49F6582DAAA9 /* AlgoChatKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D0E598A5F978D44E0D01241 /* AlgoChatKit.framework */; };
 		547E6AE42E5F26DA00D82D13 /* ImportAccountsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547E6AE32E5F26D900D82D13 /* ImportAccountsHandler.swift */; };
 		547E6AE52E5F26DA00D82D13 /* ImportAccountsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547E6AE32E5F26D900D82D13 /* ImportAccountsHandler.swift */; };
 		547E6AE62E5F26DA00D82D13 /* ImportAccountsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547E6AE32E5F26D900D82D13 /* ImportAccountsHandler.swift */; };
@@ -7447,6 +7449,7 @@
 		F07F00732923C5E800901F07 /* pera-loader-purple-dark.json in Resources */ = {isa = PBXBuildFile; fileRef = F07F006F2923C5E800901F07 /* pera-loader-purple-dark.json */; };
 		F07F00742923C5E800901F07 /* pera-loader-purple-dark.json in Resources */ = {isa = PBXBuildFile; fileRef = F07F006F2923C5E800901F07 /* pera-loader-purple-dark.json */; };
 		F07F00752923C5E800901F07 /* pera-loader-purple-dark.json in Resources */ = {isa = PBXBuildFile; fileRef = F07F006F2923C5E800901F07 /* pera-loader-purple-dark.json */; };
+		FF193FC4410EB1D5139D2DD3 /* AlgoChatKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1D0E598A5F978D44E0D01241 /* AlgoChatKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -7516,6 +7519,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				5916359A2E44D162002184C2 /* pera_wallet_core.framework in Embed Frameworks */,
+				FF193FC4410EB1D5139D2DD3 /* AlgoChatKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -7755,6 +7759,7 @@
 		17F8BF6028A2BAC500992F91 /* ALGAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALGAnalytics.swift; sourceTree = "<group>"; };
 		17F8BF6828A4F7CC00992F91 /* RekeyAccountInformationListActionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RekeyAccountInformationListActionViewModel.swift; sourceTree = "<group>"; };
 		1828816426CA8616000C4D3D /* VisualEffectViewWithCustomIntensity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectViewWithCustomIntensity.swift; sourceTree = "<group>"; };
+		1D0E598A5F978D44E0D01241 /* AlgoChatKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AlgoChatKit.framework; path = Libraries/AlgoChatKit.framework; sourceTree = SOURCE_ROOT; };
 		2B01E2C424EF11FA00C6E5B7 /* LedgerAccountSelectionListLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LedgerAccountSelectionListLayout.swift; sourceTree = "<group>"; };
 		2B01E2C724EF121000C6E5B7 /* LedgerAccountSelectionDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LedgerAccountSelectionDataSource.swift; sourceTree = "<group>"; };
 		2B01FE5826147FD7006C3C56 /* AccountRecoverOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountRecoverOptionsViewController.swift; sourceTree = "<group>"; };
@@ -10460,49 +10465,49 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		54579EB32E96539A004DC635 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		54579EB32E96539A004DC635 /* Exceptions for "Data Types" folder in "pera" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				ImageType.swift,
 			);
 			target = 2B8BE4CD22391C38005D8565 /* pera */;
 		};
-		54579EB42E96539A004DC635 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		54579EB42E96539A004DC635 /* Exceptions for "Data Types" folder in "pera-beta" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				ImageType.swift,
 			);
 			target = 2B0F615A24EC129D00DA22A6 /* pera-beta */;
 		};
-		54579EB52E96539A004DC635 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		54579EB52E96539A004DC635 /* Exceptions for "Data Types" folder in "pera-staging" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				ImageType.swift,
 			);
 			target = 17BD4DEE2292F1260003E49A /* pera-staging */;
 		};
-		545CAA882E28CDDA00D0C9A0 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		545CAA882E28CDDA00D0C9A0 /* Exceptions for "Scenes" folder in "pera-tests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"Settings List/SettingsListModelTests.swift",
 			);
 			target = 2B95407625A75FB20098805B /* pera-tests */;
 		};
-		545CAA8C2E28CEAC00D0C9A0 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		545CAA8C2E28CEAC00D0C9A0 /* Exceptions for "Testing Tools" folder in "pera-tests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"Tag+PublicTags.swift",
 			);
 			target = 2B95407625A75FB20098805B /* pera-tests */;
 		};
-		5470AA3D2EA0D2E100BCB13B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		5470AA3D2EA0D2E100BCB13B /* Exceptions for "Formatters" folder in "pera-tests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				AccountNameFormatterTests.swift,
 			);
 			target = 2B95407625A75FB20098805B /* pera-tests */;
 		};
-		5474F7662E9E54DC00D6B6BF /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		5474F7662E9E54DC00D6B6BF /* Exceptions for "Encoders and Decoders" folder in "pera-tests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				JsonDecoderTests.swift,
@@ -10510,35 +10515,35 @@
 			);
 			target = 2B95407625A75FB20098805B /* pera-tests */;
 		};
-		54B91DD82ED9D7F500C5CD1A /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		54B91DD82ED9D7F500C5CD1A /* Exceptions for "Utils" folder in "pera" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Logging/PeraLogger.swift,
 			);
 			target = 2B8BE4CD22391C38005D8565 /* pera */;
 		};
-		54B91DD92ED9D7F500C5CD1A /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		54B91DD92ED9D7F500C5CD1A /* Exceptions for "Utils" folder in "pera-beta" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Logging/PeraLogger.swift,
 			);
 			target = 2B0F615A24EC129D00DA22A6 /* pera-beta */;
 		};
-		54B91DDA2ED9D7F500C5CD1A /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		54B91DDA2ED9D7F500C5CD1A /* Exceptions for "Utils" folder in "pera-staging" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Logging/PeraLogger.swift,
 			);
 			target = 17BD4DEE2292F1260003E49A /* pera-staging */;
 		};
-		54B91DDB2ED9D7F500C5CD1A /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		54B91DDB2ED9D7F500C5CD1A /* Exceptions for "Utils" folder in "pera-wallet-core" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Logging/PeraLogger.swift,
 			);
 			target = 591635912E44D162002184C2 /* pera-wallet-core */;
 		};
-		54C726112E27922700E08B4C /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		54C726112E27922700E08B4C /* Exceptions for "Data Providers" folder in "pera-tests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				AccountDataProviderTests.swift,
@@ -10546,7 +10551,7 @@
 			);
 			target = 2B95407625A75FB20098805B /* pera-tests */;
 		};
-		591681332E464C95002184C2 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		591681332E464C95002184C2 /* Exceptions for "Managers" folder in "pera-staging" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"API/API Services/Algod/AlgodApiManager.swift",
@@ -10594,7 +10599,7 @@
 			);
 			target = 17BD4DEE2292F1260003E49A /* pera-staging */;
 		};
-		591681342E464C95002184C2 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		591681342E464C95002184C2 /* Exceptions for "Views" folder in "pera-staging" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Buttons/AccountRowWithAddButton.swift,
@@ -10628,7 +10633,7 @@
 			);
 			target = 17BD4DEE2292F1260003E49A /* pera-staging */;
 		};
-		59B1FE582E4B587600B8F6FB /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		59B1FE582E4B587600B8F6FB /* Exceptions for "PassKeyExtension" folder in "autofill-extension-staging" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				CredentialProviderService.swift,
@@ -10638,7 +10643,7 @@
 			);
 			target = 59B1FE362E4B553A00B8F6FB /* autofill-extension-staging */;
 		};
-		59B1FE5B2E4B588200B8F6FB /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		59B1FE5B2E4B588200B8F6FB /* Exceptions for "PassKeyExtension" folder in "autofill-extension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				CredentialProviderService.swift,
@@ -10648,7 +10653,7 @@
 			);
 			target = 59B1FC572E4B505E00B8F6FB /* autofill-extension */;
 		};
-		59E606B22E4A712800CCA99B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		59E606B22E4A712800CCA99B /* Exceptions for "Managers" folder in "pera-beta" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"API/API Services/Algod/AlgodApiManager.swift",
@@ -10696,7 +10701,7 @@
 			);
 			target = 2B0F615A24EC129D00DA22A6 /* pera-beta */;
 		};
-		59E606B32E4A712800CCA99B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		59E606B32E4A712800CCA99B /* Exceptions for "Views" folder in "pera-beta" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Buttons/AccountRowWithAddButton.swift,
@@ -10730,7 +10735,7 @@
 			);
 			target = 2B0F615A24EC129D00DA22A6 /* pera-beta */;
 		};
-		59E60F2A2E4A71D300CCA99B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		59E60F2A2E4A71D300CCA99B /* Exceptions for "Managers" folder in "pera" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"API/API Services/Algod/AlgodApiManager.swift",
@@ -10778,7 +10783,7 @@
 			);
 			target = 2B8BE4CD22391C38005D8565 /* pera */;
 		};
-		59E60F2B2E4A71D300CCA99B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		59E60F2B2E4A71D300CCA99B /* Exceptions for "Views" folder in "pera" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Buttons/AccountRowWithAddButton.swift,
@@ -10815,23 +10820,213 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		5449C7C52DDB4AE600E63A8F /* Scenes */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Scenes; sourceTree = "<group>"; };
-		5455EC382E9BF57B006CE415 /* Legacy Handlers */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Legacy Handlers"; sourceTree = "<group>"; };
-		54579EA92E965346004DC635 /* Data Providers */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Data Providers"; sourceTree = "<group>"; };
-		54579EAE2E965372004DC635 /* Data Types */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (54579EB32E96539A004DC635 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 54579EB42E96539A004DC635 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 54579EB52E96539A004DC635 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Data Types"; sourceTree = "<group>"; };
-		5458D85A2DEDB35700DADA06 /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
-		5458D8682DEDB35700DADA06 /* Managers */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (59E60F2A2E4A71D300CCA99B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 59E606B22E4A712800CCA99B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 591681332E464C95002184C2 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Managers; sourceTree = "<group>"; };
-		5458D88D2DEDB35E00DADA06 /* Views */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (59E60F2B2E4A71D300CCA99B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 59E606B32E4A712800CCA99B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 591681342E464C95002184C2 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Views; sourceTree = "<group>"; };
-		5458D8902DEDB36200DADA06 /* Utils */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (54B91DD82ED9D7F500C5CD1A /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 54B91DD92ED9D7F500C5CD1A /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 54B91DDA2ED9D7F500C5CD1A /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 54B91DDB2ED9D7F500C5CD1A /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Utils; sourceTree = "<group>"; };
-		545CAA842E28CDAA00D0C9A0 /* Scenes */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (545CAA882E28CDDA00D0C9A0 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Scenes; sourceTree = "<group>"; };
-		545CAA892E28CE1400D0C9A0 /* Testing Tools */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (545CAA8C2E28CEAC00D0C9A0 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Testing Tools"; sourceTree = "<group>"; };
-		545CAA932E28F41000D0C9A0 /* Mock */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Mock; sourceTree = "<group>"; };
-		5474F7632E9E54A000D6B6BF /* Encoders and Decoders */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (5474F7662E9E54DC00D6B6BF /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Encoders and Decoders"; sourceTree = "<group>"; };
-		5493547A2E9FD157009E53CF /* Formatters */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (5470AA3D2EA0D2E100BCB13B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Formatters; sourceTree = "<group>"; };
-		54C2F7AF2F7BB26900715A1E /* RekeyedJointAccountInformation */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = RekeyedJointAccountInformation; sourceTree = "<group>"; };
-		54C7260E2E27920B00E08B4C /* Data Providers */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (54C726112E27922700E08B4C /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Data Providers"; sourceTree = "<group>"; };
-		594D7B302EB4F88F00D0DA38 /* AccountSearchRecovery */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AccountSearchRecovery; sourceTree = "<group>"; };
-		59B1F8B52E4B319500B8F6FB /* PassKeyExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (59B1FE5B2E4B588200B8F6FB /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 59B1FE582E4B587600B8F6FB /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = PassKeyExtension; sourceTree = "<group>"; };
+		5449C7C52DDB4AE600E63A8F /* Scenes */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
+		5455EC382E9BF57B006CE415 /* Legacy Handlers */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = "Legacy Handlers";
+			sourceTree = "<group>";
+		};
+		54579EA92E965346004DC635 /* Data Providers */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = "Data Providers";
+			sourceTree = "<group>";
+		};
+		54579EAE2E965372004DC635 /* Data Types */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				54579EB32E96539A004DC635 /* Exceptions for "Data Types" folder in "pera" target */,
+				54579EB42E96539A004DC635 /* Exceptions for "Data Types" folder in "pera-beta" target */,
+				54579EB52E96539A004DC635 /* Exceptions for "Data Types" folder in "pera-staging" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = "Data Types";
+			sourceTree = "<group>";
+		};
+		5458D85A2DEDB35700DADA06 /* Extensions */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		5458D8682DEDB35700DADA06 /* Managers */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				59E60F2A2E4A71D300CCA99B /* Exceptions for "Managers" folder in "pera" target */,
+				59E606B22E4A712800CCA99B /* Exceptions for "Managers" folder in "pera-beta" target */,
+				591681332E464C95002184C2 /* Exceptions for "Managers" folder in "pera-staging" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		5458D88D2DEDB35E00DADA06 /* Views */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				59E60F2B2E4A71D300CCA99B /* Exceptions for "Views" folder in "pera" target */,
+				59E606B32E4A712800CCA99B /* Exceptions for "Views" folder in "pera-beta" target */,
+				591681342E464C95002184C2 /* Exceptions for "Views" folder in "pera-staging" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		5458D8902DEDB36200DADA06 /* Utils */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				54B91DD82ED9D7F500C5CD1A /* Exceptions for "Utils" folder in "pera" target */,
+				54B91DD92ED9D7F500C5CD1A /* Exceptions for "Utils" folder in "pera-beta" target */,
+				54B91DDA2ED9D7F500C5CD1A /* Exceptions for "Utils" folder in "pera-staging" target */,
+				54B91DDB2ED9D7F500C5CD1A /* Exceptions for "Utils" folder in "pera-wallet-core" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		545CAA842E28CDAA00D0C9A0 /* Scenes */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				545CAA882E28CDDA00D0C9A0 /* Exceptions for "Scenes" folder in "pera-tests" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
+		545CAA892E28CE1400D0C9A0 /* Testing Tools */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				545CAA8C2E28CEAC00D0C9A0 /* Exceptions for "Testing Tools" folder in "pera-tests" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = "Testing Tools";
+			sourceTree = "<group>";
+		};
+		545CAA932E28F41000D0C9A0 /* Mock */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = Mock;
+			sourceTree = "<group>";
+		};
+		5474F7632E9E54A000D6B6BF /* Encoders and Decoders */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				5474F7662E9E54DC00D6B6BF /* Exceptions for "Encoders and Decoders" folder in "pera-tests" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = "Encoders and Decoders";
+			sourceTree = "<group>";
+		};
+		5493547A2E9FD157009E53CF /* Formatters */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				5470AA3D2EA0D2E100BCB13B /* Exceptions for "Formatters" folder in "pera-tests" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = Formatters;
+			sourceTree = "<group>";
+		};
+		54C2F7AF2F7BB26900715A1E /* RekeyedJointAccountInformation */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = RekeyedJointAccountInformation;
+			sourceTree = "<group>";
+		};
+		54C7260E2E27920B00E08B4C /* Data Providers */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				54C726112E27922700E08B4C /* Exceptions for "Data Providers" folder in "pera-tests" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = "Data Providers";
+			sourceTree = "<group>";
+		};
+		594D7B302EB4F88F00D0DA38 /* AccountSearchRecovery */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = AccountSearchRecovery;
+			sourceTree = "<group>";
+		};
+		59B1F8B52E4B319500B8F6FB /* PassKeyExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				59B1FE5B2E4B588200B8F6FB /* Exceptions for "PassKeyExtension" folder in "autofill-extension" target */,
+				59B1FE582E4B587600B8F6FB /* Exceptions for "PassKeyExtension" folder in "autofill-extension-staging" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = PassKeyExtension;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -10860,6 +11055,7 @@
 				591635982E44D162002184C2 /* pera_wallet_core.framework in Frameworks */,
 				59B1FC712E4B519C00B8F6FB /* WebRTC in Frameworks */,
 				54BE1BB42EDDA78A001C3676 /* ZIPFoundation in Frameworks */,
+				481D31276E3D49F6582DAAA9 /* AlgoChatKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -10920,6 +11116,7 @@
 				591635CE2E44D1DB002184C2 /* SwiftDate in Frameworks */,
 				591664792E4603B4002184C2 /* Web3Wallet in Frameworks */,
 				591635D42E44D1DB002184C2 /* MacaroonBiometrics in Frameworks */,
+				10A77912DAF6269145B2165D /* AlgoChatKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11124,9 +11321,10 @@
 			isa = PBXGroup;
 			children = (
 				D4852CF22F2C00B100ADA6ED /* AlgoSDK.xcframework */,
+				1D0E598A5F978D44E0D01241 /* AlgoChatKit.framework */,
 			);
 			path = Libraries;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		1770728C290A8DD9009E02AE /* Search */ = {
 			isa = PBXGroup;
@@ -24461,8 +24659,6 @@
 				594D7B302EB4F88F00D0DA38 /* AccountSearchRecovery */,
 			);
 			name = "pera-beta";
-			packageProductDependencies = (
-			);
 			productName = algorand;
 			productReference = 2B0F634E24EC129D00DA22A6 /* pera-beta.app */;
 			productType = "com.apple.product-type.application";
@@ -24601,8 +24797,6 @@
 				59B1FC6E2E4B506B00B8F6FB /* PBXTargetDependency */,
 			);
 			name = "autofill-extension";
-			packageProductDependencies = (
-			);
 			productName = "autofill-extension";
 			productReference = 59B1FC582E4B505E00B8F6FB /* autofill-extension.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -24621,8 +24815,6 @@
 				59B1FE4D2E4B556D00B8F6FB /* PBXTargetDependency */,
 			);
 			name = "autofill-extension-staging";
-			packageProductDependencies = (
-			);
 			productName = "autofill-extension-staging";
 			productReference = 59B1FE372E4B553A00B8F6FB /* autofill-extension-staging.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -32764,6 +32956,10 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Libraries",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -32809,6 +33005,10 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Libraries",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -32854,6 +33054,10 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Libraries",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";

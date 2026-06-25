@@ -27,6 +27,7 @@ import UIKit
 import UserNotifications
 import Kingfisher
 import pera_wallet_core
+import AlgoChatKit
 
 @UIApplicationMain
 class AppDelegate:
@@ -42,7 +43,23 @@ class AppDelegate:
     var window: UIWindow?
 
     var notificationObservations: [NSObjectProtocol] = []
-    
+
+    override init() {
+        super.init()
+        AppDelegate.runAlgoChatProof()
+    }
+
+    /// Proof that AlgoChat (via the vendored AlgoChatKit.framework) is linked and
+    /// EXECUTES inside the Corvid Wallet process. Runs at delegate construction,
+    /// before any lazy DB/keychain init.
+    private static func runAlgoChatProof() {
+        let seed = Data("corvid-wallet-launch".utf8)
+        let address = (try? AlgoChatKit.messagingAddress(fromSeed: seed)) ?? "n/a"
+        let proof = "CORVID-ALGOCHAT OK AlgoChatKit v\(AlgoChatKit.version) running inside Corvid Wallet | maxMsgBytes=\(AlgoChatKit.maxMessageBytes) | messagingAddress=\(address)"
+        NSLog("%@", proof)
+        try? proof.write(toFile: NSTemporaryDirectory() + "corvid-algochat-proof.txt", atomically: true, encoding: .utf8)
+    }
+
     private(set) lazy var appConfiguration = createAppConfiguration()
 
     private lazy var appLaunchController = createAppLaunchController()
