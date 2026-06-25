@@ -39,19 +39,30 @@ public class AppEnvironment {
     }
     
     public lazy var schema = "https"
-    
+
+    // MARK: - CorvidLabs LocalNet (DEBUG only)
+    // In DEBUG builds this fork points algod/indexer at an AlgoKit LocalNet so
+    // the wallet exercises real on-chain operations (balance, send, receive,
+    // assets, AlgoChat) against a local sandbox. Release builds use the normal
+    // bundle-configured public Algorand networks.
+    private static let localNetToken = String(repeating: "a", count: 64)
+    private static let localNetAlgodApi = "http://localhost:4001/v2"
+    private static let localNetIndexerApi = "http://localhost:8980/v2"
+
     public lazy var algodToken: String = {
-        guard let token = Bundle.main.infoDictionary?["ALGOD_TOKEN"] as? String else {
-            return ""
-        }
-        return token
+        #if DEBUG
+        return AppEnvironment.localNetToken
+        #else
+        return Bundle.main.infoDictionary?["ALGOD_TOKEN"] as? String ?? ""
+        #endif
     }()
 
     public lazy var indexerToken: String = {
-        guard let token = Bundle.main.infoDictionary?["INDEXER_TOKEN"] as? String else {
-            return ""
-        }
-        return token
+        #if DEBUG
+        return AppEnvironment.localNetToken
+        #else
+        return Bundle.main.infoDictionary?["INDEXER_TOKEN"] as? String ?? ""
+        #endif
     }()
 
     public lazy var apiKey: String? = Bundle.main["API_KEY"]
@@ -68,8 +79,13 @@ public class AppEnvironment {
         }
         return host
     }()
+    #if DEBUG
+    public private(set) lazy var testNetAlgodApi = AppEnvironment.localNetAlgodApi
+    public private(set) lazy var testNetIndexerApi = AppEnvironment.localNetIndexerApi
+    #else
     public private(set) lazy var testNetAlgodApi = "\(schema)://\(testNetAlgodHost)/v2"
     public private(set) lazy var testNetIndexerApi = "\(schema)://\(testNetIndexerHost)/v2"
+    #endif
 
     public lazy var mainNetAlgodHost: String = {
         guard let host = Bundle.main.infoDictionary?["ALGOD_MAINNET_HOST"] as? String else {
@@ -83,8 +99,13 @@ public class AppEnvironment {
         }
         return host
     }()
+    #if DEBUG
+    public private(set) lazy var mainNetAlgodApi = AppEnvironment.localNetAlgodApi
+    public private(set) lazy var mainNetIndexerApi = AppEnvironment.localNetIndexerApi
+    #else
     public private(set) lazy var mainNetAlgodApi = "\(schema)://\(mainNetAlgodHost)/v2"
     public private(set) lazy var mainNetIndexerApi = "\(schema)://\(mainNetIndexerHost)/v2"
+    #endif
     
     public let testNetARC59AppID: Int64 = 643020148
     public let mainNetARC59AppID: Int64 = 2449590623

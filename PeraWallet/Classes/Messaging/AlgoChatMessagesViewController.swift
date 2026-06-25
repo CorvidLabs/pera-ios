@@ -45,8 +45,18 @@ final class AlgoChatMessagesViewController: BaseViewController {
     private lazy var composeField = UITextField()
     private lazy var sendButton = UIButton(type: .system)
 
-    private let accent = UIColor(red: 14/255, green: 111/255, blue: 102/255, alpha: 1)
-    private let paper = UIColor(red: 250/255, green: 249/255, blue: 246/255, alpha: 1)
+    // CorvidLabs dynamic palette (adapts to light/dark).
+    private static func dyn(_ light: UInt, _ dark: UInt) -> UIColor {
+        UIColor { $0.userInterfaceStyle == .dark ? UIColor(rgbHex: dark) : UIColor(rgbHex: light) }
+    }
+    private let accent    = dyn(0x0E6F66, 0x45D0BC)
+    private let paper     = dyn(0xFAF9F6, 0x131619)
+    private let surface   = dyn(0xFFFFFF, 0x1B1F23)
+    private let well      = dyn(0xF1F0EC, 0x272C31)
+    private let ink       = dyn(0x15181B, 0xF4F3EF)
+    private let inkFaint  = dyn(0x50555B, 0xA3A199)
+    private let hairline  = dyn(0x000000, 0xFFFFFF)
+    private let onAccent  = UIColor(rgbHex: 0xFAF9F6)
 
     // MARK: - Initializers
 
@@ -63,10 +73,8 @@ final class AlgoChatMessagesViewController: BaseViewController {
         title = "Messages"
         view.backgroundColor = paper
 
-        addressCard.backgroundColor = UIColor.white
+        addressCard.backgroundColor = surface
         addressCard.layer.cornerRadius = 14
-        addressCard.layer.borderWidth = 1
-        addressCard.layer.borderColor = UIColor.black.withAlphaComponent(0.06).cgColor
 
         addressTitleLabel.text = "YOUR ALGOCHAT ADDRESS"
         addressTitleLabel.font = .systemFont(ofSize: 11, weight: .semibold)
@@ -74,13 +82,13 @@ final class AlgoChatMessagesViewController: BaseViewController {
 
         addressValueLabel.text = "Deriving…"
         addressValueLabel.font = .monospacedSystemFont(ofSize: 12, weight: .regular)
-        addressValueLabel.textColor = UIColor(white: 0.1, alpha: 1)
+        addressValueLabel.textColor = ink
         addressValueLabel.numberOfLines = 2
         addressValueLabel.adjustsFontSizeToFitWidth = true
         addressValueLabel.minimumScaleFactor = 0.7
 
         statusLabel.font = .systemFont(ofSize: 12, weight: .regular)
-        statusLabel.textColor = UIColor(white: 0.4, alpha: 1)
+        statusLabel.textColor = inkFaint
         statusLabel.numberOfLines = 2
 
         peerField.placeholder = "Recipient messaging address"
@@ -97,9 +105,7 @@ final class AlgoChatMessagesViewController: BaseViewController {
         tableView.register(MessageCell.self, forCellReuseIdentifier: MessageCell.reuseID)
         tableView.allowsSelection = false
 
-        composeBar.backgroundColor = UIColor.white
-        composeBar.layer.borderWidth = 1
-        composeBar.layer.borderColor = UIColor.black.withAlphaComponent(0.06).cgColor
+        composeBar.backgroundColor = surface
 
         composeField.placeholder = "Message"
         composeField.font = .systemFont(ofSize: 15)
@@ -108,7 +114,7 @@ final class AlgoChatMessagesViewController: BaseViewController {
 
         sendButton.setTitle("Send", for: .normal)
         sendButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
-        sendButton.setTitleColor(.white, for: .normal)
+        sendButton.setTitleColor(onAccent, for: .normal)
         sendButton.backgroundColor = accent
         sendButton.layer.cornerRadius = 10
         sendButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
@@ -187,16 +193,6 @@ final class AlgoChatMessagesViewController: BaseViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        #if DEBUG
-        // Dev/demo: pre-fill peer + message via env so UI automation can drive a
-        // send without focusing text fields (synthetic taps can't focus fields).
-        if let peer = ProcessInfo.processInfo.environment["CORVID_CHAT_PEER"], !peer.isEmpty {
-            peerField.text = peer
-        }
-        if let message = ProcessInfo.processInfo.environment["CORVID_CHAT_MSG"], !message.isEmpty {
-            composeField.text = message
-        }
-        #endif
         bootstrap()
     }
 
@@ -233,7 +229,7 @@ final class AlgoChatMessagesViewController: BaseViewController {
                     self.statusLabel.text = "Address ready. Fund it to publish your key: \(error.localizedDescription)"
                 }
             }
-            // 3) If a peer is already set (e.g. dev/demo pre-fill), load the thread.
+            // 3) If a peer is already set, load the thread.
             let peer = await MainActor.run { self.peerField.text ?? "" }
             if !peer.isEmpty, let loaded = try? await service.messages(with: peer) {
                 await MainActor.run {
@@ -310,7 +306,13 @@ extension AlgoChatMessagesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: MessageCell.reuseID, for: indexPath)
         if let cell = cell as? MessageCell {
-            cell.configure(with: messages[indexPath.row], accent: accent)
+            cell.configure(
+                with: messages[indexPath.row],
+                outgoing: accent,
+                onOutgoing: onAccent,
+                incomingBg: well,
+                incomingText: ink
+            )
         }
         return cell
     }
@@ -348,18 +350,38 @@ private final class MessageCell: UITableViewCell {
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
-    func configure(with message: CorvidChatMessage, accent: UIColor) {
+    func configure(
+        with message: CorvidChatMessage,
+        outgoing: UIColor,
+        onOutgoing: UIColor,
+        incomingBg: UIColor,
+        incomingText: UIColor
+    ) {
         label.text = message.body
         if message.isOutgoing {
-            bubble.backgroundColor = accent
-            label.textColor = .white
+            bubble.backgroundColor = outgoing
+            label.textColor = onOutgoing
             leadingConstraint?.deactivate()
             trailingConstraint?.activate()
         } else {
-            bubble.backgroundColor = UIColor(white: 0.9, alpha: 1)
-            label.textColor = UIColor(white: 0.1, alpha: 1)
+            bubble.backgroundColor = incomingBg
+            label.textColor = incomingText
             trailingConstraint?.deactivate()
             leadingConstraint?.activate()
         }
+    }
+}
+
+// MARK: - Color helper
+
+private extension UIColor {
+    /// Builds an opaque color from a 24-bit RGB hex value (e.g. 0x0E6F66).
+    convenience init(rgbHex: UInt) {
+        self.init(
+            red: CGFloat((rgbHex >> 16) & 0xFF) / 255,
+            green: CGFloat((rgbHex >> 8) & 0xFF) / 255,
+            blue: CGFloat(rgbHex & 0xFF) / 255,
+            alpha: 1
+        )
     }
 }
