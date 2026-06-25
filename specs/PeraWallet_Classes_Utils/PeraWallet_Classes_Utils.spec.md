@@ -113,7 +113,15 @@ depends_on: []
 
 ## Purpose
 
-App-target UI/feature module (`PeraWallet/Classes/Utils`). Internal-by-default; see Public API for any cross-module-public surface.
+App-target shared utility layer (`PeraWallet/Classes/Utils`) for the Pera Wallet iOS app. It is not a screen/feature flow of its own; instead it provides the cross-cutting building blocks that almost every feature screen depends on. The major areas are:
+
+- **Transaction composing & signing** — `TransactionController` orchestrates building unsigned transactions (via the per-type `*TransactionDataBuilder`s: algo, asset, opt-in, opt-out, opt-in-and-send, rekey, keyreg), routing each to the correct signer (Algo25 private-key, HD wallet seed, or Ledger BLE), calculating fees with `TransactionFeeCalculator`, uploading via `TransactionAPIConnector`, and reporting progress through `TransactionControllerDelegate`. `ARC59TransactionSendController` / `ARC59SendTransactionSigner` / `ARC59SendTransactionDataBuilder` handle the ARC-59 "send to a not-yet-opted-in account" inbox flow with grouped, sequentially-uploaded transactions.
+- **In-app messaging** — `BannerController` (built on `MacaroonBanner`) enqueues error / success / info / in-app-notification banners; `BottomActionableBannerController` shows actionable bottom banners (e.g. a fetch-error retry).
+- **Navigation & presentation infrastructure** — `BottomSheetTransition` / `BottomSheetTransitionController` for interactive bottom-sheet presentation, the `NavigationBar*` family (large-title controller, custom bar-button items, title views), `UIViewController+Flow`/`+Additions` open/dismiss helpers, and `KeyboardController`.
+- **Dependency injection** — `ViewControllerConfiguration` is the bag of app-wide services (API, session, `SharedDataController`, banner/loading controllers, `PeraConnect`, analytics, feature flags, HD wallet services) handed to every `BaseViewController`; `AppConfiguration` holds the app-level singletons.
+- **Validators & helpers** — `RekeyingValidator`, `TransactionSignatureValidator`, `NoteSizeValidator`, `SlippageToleranceValidator`; WalletConnect single-transaction presentation/routing protocols; `Tooltip*`, `ImagePicker`, `MediaCleaner`, `AlgorandAppStoreReviewer`, and a large set of UIKit/Foundation/Macaroon/WebKit extensions.
+
+Ownership boundary: this module owns app-side UI plumbing and transaction-flow orchestration on the device. The domain models, networking (`ALGAPI`), `SharedDataController`, account/asset models, SDK signing primitives, and Ledger/HD-wallet operations live in `pera_wallet_core` (the `PeraWalletCore` framework); Utils composes and drives them. Almost all types are `internal`; only a handful (e.g. `MediaCleaner`) are `public`.
 
 ## Public API
 
@@ -130,26 +138,57 @@ App-target UI/feature module (`PeraWallet/Classes/Utils`). Internal-by-default; 
 
 ## Invariants
 
-1. Module is part of the app target (internal access); not a public library boundary.
+1. **No upload of unsigned transactions.** `TransactionController.uploadTransaction` only appends a transaction's `signedTransaction` data; a transaction is considered complete only when `transactions.allSatisfy { $0.signedTransaction != nil }`. Signing must finish for every member of the group before upload.
+2. **Signing routes by account capability.** For each signer account the controller picks exactly one path: Ledger BLE (`hasLedgerDetail()` / `requiresLedgerConnection()`), HD-wallet seed (`isHDAccount`), or Algo25 private key — never more than one. Rekeyed accounts have their auth account's ledger/HD detail substituted before signing.
+3. **Signature pre-validation gates the flow.** `canSignTransaction(for:)` runs `TransactionSignatureValidator` (and `RekeyingValidator` for rekey) before composing; on failure it presents an error banner via `BannerController` and returns `false`, so unsignable accounts never reach composing/upload. Joint accounts bypass this gate (their participants are validated individually).
+4. **Ledger timeout is bounded.** When a Ledger connection is required, a 20-second timer fires `didFailedComposing(.inapp(.ledgerConnection))` and presents a BLE error banner if no signature arrives, preventing an indefinitely hung sign flow.
+5. **ARC-59 group uploads are ordered and atomic-on-failure.** `ARC59TransactionSendController` chains `TransactionUploadAndWaitOperation`s with `addDependency` so groups upload sequentially; any failure/cancel cancels all remaining operations on the queue.
+6. **WalletConnect requests must map to a known type.** `WalletConnectSingleTransactionRequestPresentable` rejects the WC v1/v2 request with `.unsupported(.unknownTransaction)` and dismisses if `transactionType(for:)` is `nil`; otherwise it pushes the matching `wc*Transaction` screen.
 
 ## Behavioral Examples
 
-### Scenario: Placeholder
-- **Given** the app is running
-- **When** this module's flow is entered
-- **Then** it behaves per its screens/controllers
+### Scenario: Sending Algos from a standard (non-Ledger) account
+- **Given** a `TransactionController` with an `AlgosTransactionSendDraft` set via `setTransactionDraft`
+- **When** `getTransactionParamsAndComposeTransactionData(for: .algo)` is called
+- **Then** it fetches `TransactionParams`, builds the unsigned txn with `AlgoTransactionDataBuilder`, signs it with the account's private data, calculates the fee, re-composes once if the projected fee differs from the calculated fee, and calls `delegate.transactionController(_:didComposedTransactionDataFor:)` with the algos draft.
+
+### Scenario: Ledger connection times out
+- **Given** a transaction whose signer account `requiresLedgerConnection()`
+- **When** scanning starts but no signature is received within 20 seconds
+- **Then** the timer stops the BLE scan, presents an error banner (`ble-error-connection-title`), and notifies the delegate with `didFailedComposing(.inapp(.ledgerConnection))`.
+
+### Scenario: WalletConnect single transaction of an unknown type
+- **Given** a `WCTransaction` whose `transactionType(for: account)` resolves to `nil`
+- **When** `presentSingleWCTransaction` is called on a `BaseViewController` adopting the presentable
+- **Then** the WC v1 or v2 request is rejected with `.unsupported(.unknownTransaction)` via `peraConnect.rejectTransactionRequest` and the screen is dismissed.
 
 ## Error Cases
 
 | Condition | Behavior |
 |-----------|----------|
-| N/A | Documented per screen |
+| `getTransactionParams` network failure | Resets Ledger op, clears transactions, delegate `didFailedComposing(.network(.connection(...)))`. |
+| Account fails signature validation | `BannerController.present(error)` shown; `canSignTransaction` returns `false`; flow aborts. |
+| Algos minimum-balance not met | `AlgoTransactionDataBuilder` returns no items; delegate `didFailedComposing(.inapp(.minimumAmount(amount:)))`. |
+| Fee calculation below minimum | `TransactionFeeCalculator` delegate fires; `handleTransactionComposingError(.inapp(.minimumAmount...))`, transactions cleared. |
+| HD-wallet seed missing / SDK error | Delegate `didFailedComposing(.inapp(.sdkError(error:)))` or `.inapp(.other)`; nothing uploaded. |
+| Ledger cancelled / closed app / unmatched address / fetch failure / BLE error | Matching localized error banner via `BannerController.presentErrorBanner`; some cases also reset the Ledger operation. |
+| Transaction upload returns no id | Resets Ledger op, logs `nonAcceptanceLedgerTransaction` analytics, delegate `didFailedTransaction(.network(.unexpected(error)))`. |
+| ARC-59 group operation fails / cancels | `cancelAllOperations()` on the queue; event published (`didFailTransaction` / `didFailNetwork` / `didCancelTransaction`). |
+| WC transaction type unresolved | WC request rejected `.unsupported(.unknownTransaction)`, screen dismissed. |
+| Media cleanup directory read fails | `MediaCleaner` records `mediaCleanUpError()` analytics and exits silently. |
 
 ## Dependencies
 
 | Module | Usage |
 |--------|-------|
-| PeraWalletCore | Shared models/services |
+| `pera_wallet_core` (PeraWalletCore) | `ALGAPI`, `Session`, `SharedDataController`, `Account`/asset models, `TransactionParams`, all `*TransactionSendDraft`s, `LedgerTransactionOperation`, `HDWalletTransactionSigner`/`HDWalletStorable`, `SDKTransactionSigner`, `AlgorandSDK`, `PeraConnect`, `WCTransaction`/`WCSessionDraft`, feature-flag & analytics (`ALGAnalytics`) services. |
+| `AlgorandSDK` / `MessagePack` | Raw transaction construction, signing, and msgpack unpacking of signed transactions. |
+| `MacaroonBanner` | Base `BannerController` queueing/presentation. |
+| `MacaroonUIKit` / `MacaroonBottomSheet` / `MacaroonUtils` | View theming/composition, bottom-sheet presentation, `asyncMain`, regex helpers. |
+| `MagpieHipo` / `MagpieCore` / `MagpieExceptions` | `HIPTransactionError`, `HIPNetworkError`, indexer error types. |
+| `Kingfisher` | Image cache clearing in `MediaCleaner`. |
+| `WebKit` (WKWebView/WKScriptMessage) | Webview message JSON parsing/validation extensions. |
+| `StoreKit` (via `AppStoreReviewer`) | App Store review prompt. |
 
 ## Change Log
 

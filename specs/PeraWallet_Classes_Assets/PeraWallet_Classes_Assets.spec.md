@@ -158,7 +158,37 @@ depends_on: []
 
 ## Purpose
 
-App-target UI/feature module (`PeraWallet/Classes/Assets`). Internal-by-default; see Public API for any cross-module-public surface.
+App-target UI/feature module (`PeraWallet/Classes/Assets`) that owns the full lifecycle of
+Algorand Standard Assets (ASAs) — including collectibles/NFTs — from a single account's point
+of view: discovering, opting in, viewing detail, filtering, selecting, and opting out
+(removal). It is internal-by-default within the app target.
+
+Sub-areas and their screens/flows:
+
+- **Addition** (`Addition/`): `AssetAdditionViewController` is a searchable, paginated opt-in
+  asset list. Tapping an asset opens `ASADiscoveryScreen` (fungible) or collectible detail
+  (NFT); the inline "+" accessory presents `OptInAssetScreen`, a bottom sheet showing asset ID,
+  account, and transaction fee before approving an opt-in transaction. Supporting screens:
+  `AsaVerificationInfoScreen` (explains verification tiers) and `VerifiedAssetInformationViewController`.
+- **Detail** (`Detail/`): `ASADetailScreen` is the per-account asset detail with a profile header,
+  quick actions (send / receive / swap / buy via Meld), market info, and paged Activity/About
+  fragments. `ASADiscoveryScreen` is the pre-opt-in detail variant. Legacy
+  `AlgosDetailViewController` / `AssetDetailViewController` host transaction listings.
+- **Removal** (`Removal/ManageAssetsScreen/`): `ManageAssetListViewController` lists opted-in
+  assets and collectibles with a search input and presents the opt-out / transfer-balance flow;
+  `ManagementOptionsViewController` offers add-vs-manage entry points.
+- **Filter** (`Filter/`): `AssetsFilterSelectionViewController` plus `AssetFilterOptions` /
+  `AssetFilterOptionsCache` persist toggles such as "hide assets with no balance" and
+  "display collectibles".
+- **Select** (`Select/`): `SelectAssetViewController` is the asset picker used by send flows.
+- **Common/Alert** (`Common/Alert/`): `AssetActionConfirmationViewController` is the shared
+  bottom-sheet alert (with async asset-detail fetch) used to confirm add/remove actions;
+  `AssetQuickActionView` is the reusable floating opt-in/opt-out action bar.
+
+Ownership boundary: this module owns asset-centric UI, view models, themes, and the
+collection-view data controllers/data sources that page asset lists from the API. It delegates
+on-chain work to `TransactionController` and shared flow coordinators (swap, send, receive,
+rekey, Meld, joint-account) rather than constructing transactions itself.
 
 ## Public API
 
@@ -169,25 +199,82 @@ models) are consumed only within the app target.
 ## Invariants
 
 1. Module is part of the app target (internal access); not a public library boundary.
+2. Opt-in / opt-out asset transactions are never built locally. Each action creates a
+   `TransactionController` keyed by `AssetID` (`optInTransactions` / `optOutTransactions`), and
+   the screen only signs/sends via that controller. On compose/transaction failure the cell
+   accessory is restored (`.add`), the cache entry is cleared, and blockchain-update monitoring
+   for that asset is cancelled.
+3. Before signing, `transactionController.canSignTransaction(for: account)` must succeed;
+   ledger-backed accounts must complete the `LedgerConnectionScreen` →
+   `SignWithLedgerProcessScreen` handshake, and joint accounts route through
+   `JointAccountTransactionCoordinator` before broadcast.
+4. The accessory state of an opt-in list row is derived from
+   `dataController.hasOptedIn(asset)` — `.pending → .loading`, `.optedIn → .check`,
+   `.rejected → .add` — and is recomputed for visible cells on every `didUpdateAccount` event so
+   the UI stays consistent with `sharedDataController.blockchainUpdatesMonitor`.
+5. Asset lists are server-paginated: `scrollViewDidScroll` triggers `loadMore()` when within two
+   screen-heights of the bottom, and failed pages surface a retry cell whose primary action calls
+   `loadMoreAgain()`.
+6. `ASADetailScreen` market info is shown only when `dataController.asset.isAvailableOnDiscover`;
+   collectible assets route to collectible detail rather than the fungible discovery/detail
+   screens.
 
 ## Behavioral Examples
 
-### Scenario: Placeholder
-- **Given** the app is running
-- **When** this module's flow is entered
-- **Then** it behaves per its screens/controllers
+### Scenario: Opting in to a fungible asset from the addition list
+- **Given** `AssetAdditionViewController` is showing the searchable opt-in list for a standard
+  account and a row's accessory is `.add`
+- **When** the user taps the row's "+" and approves the `OptInAssetScreen` bottom sheet
+- **Then** the cell accessory becomes `.loading`, a `TransactionController` is created for the
+  asset, `blockchainUpdatesMonitor.startMonitoringOptInUpdates` begins tracking, and an opt-in
+  transaction is composed and sent; on success the cache entry is cleared and (for collectibles)
+  a `didAddCollectible` notification is posted.
+
+### Scenario: Opt-in fails to compose or broadcast
+- **Given** an opt-in transaction is in flight and the cell shows `.loading`
+- **When** `TransactionController` reports `didFailedComposing` / `didFailedTransaction`
+- **Then** monitoring is cancelled, the cell accessory is restored to `.add`, the transaction
+  cache entry is cleared, and an error banner is presented (minimum-balance, invalid address,
+  SDK, or network message depending on the underlying `TransactionError`).
+
+### Scenario: Viewing and filtering opted-in assets
+- **Given** an account holds several assets and collectibles
+- **When** the user opens `ASADetailScreen` for one asset, or opens
+  `AssetsFilterSelectionViewController` and toggles "hide assets with no balance"
+- **Then** the detail screen shows the profile header, quick actions, market info (only when
+  `isAvailableOnDiscover`), and paged Activity/About fragments; the filter toggle is persisted via
+  `AssetFilterOptionsCache` and applied to subsequent asset lists.
 
 ## Error Cases
 
 | Condition | Behavior |
 |-----------|----------|
-| N/A | Documented per screen |
+| Opt-in/opt-out transaction fails to compose (`didFailedComposing`) | Cancel opt-in monitoring, restore cell accessory to `.add`, clear transaction cache, present inapp/network error banner |
+| Transaction broadcast fails (`didFailedTransaction`) | Same cleanup as above; banner shows network `debugDescription` or `localizedDescription` |
+| Account cannot sign (`!canSignTransaction`) | Clear transaction cache, restore cell state, abort silently (no transaction) |
+| Minimum-balance transaction error | Banner "asset-min-transaction-error" with the required Algo amount formatted via `CurrencyFormatter` |
+| Invalid receiver address | Banner with `send-algos-receiver-address-validation` message |
+| Ledger connection lost during opt-in | Dismiss `LedgerConnectionScreen`, present BLE re-pairing warning (`ledger-pairing-issue-error-title`) |
+| Ledger operation reset / user cancels | Dismiss ledger + sign-with-ledger screens, cancel monitoring, restore cell state |
+| Asset-list page load fails | List shows a retry cell; primary action re-issues `loadRequestedData()` (initial) or `loadMoreAgain()` (pagination) |
+| `AssetActionConfirmation` asset detail fetch fails | Loading view is shown then resolved; missing/invalid asset paths guarded via `draft.hasValidAsset` |
 
 ## Dependencies
 
 | Module | Usage |
 |--------|-------|
-| PeraWalletCore | Shared models/services |
+| pera_wallet_core | Core models/services: `Account`, `AssetDecoration`, `CollectibleAsset`, `ALGAsset`, `AssetID`, `AccountsServiceable`, transaction drafts |
+| SharedDataController / `blockchainUpdatesMonitor` | Tracks pending opt-in/opt-out updates and drives `didUpdateAccount` accessory refresh |
+| TransactionController | Composes, signs, and broadcasts opt-in/opt-out transactions (delegate callbacks for compose/transaction/ledger events) |
+| JointAccountTransactionCoordinator | Routes opt-in/opt-out for joint accounts; surfaces actions via Combine `$action` |
+| Swap / Send / Receive / Rekey / Meld flow coordinators | Quick actions on `ASADetailScreen` (`SwapAssetFlowCoordinator`, `SendTransactionFlowCoordinator`, `ReceiveTransactionFlowCoordinator`, `RekeyTo*`/`UndoRekeyFlowCoordinator`, `MeldFlowCoordinator`) |
+| LedgerConnectionScreen / SignWithLedgerProcessScreen | Ledger account connect + sign handshake during transactions |
+| Collectible UI module | Collectible detail screen and `CollectibleListLocalDataController.didAddCollectible` notification |
+| MacaroonUIKit / MacaroonBottomSheet / MacaroonUtils / SnapKit | Layout, theming, bottom-sheet presentation |
+| Magpie (Core/Hipo/Exceptions) | API networking and typed transaction errors (`HIPTransactionError`) |
+| `ALGAPI` | Asset list / asset detail fetching and pagination |
+| `CurrencyFormatter` / `CollectibleAmountFormatter` | Amount and fee formatting in detail and confirmation screens |
+| `AssetFilterOptionsCache` | Persists asset-list filter toggles |
 
 ## Change Log
 

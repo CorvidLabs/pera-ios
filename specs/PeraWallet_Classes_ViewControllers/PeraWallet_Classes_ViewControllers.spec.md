@@ -131,7 +131,35 @@ depends_on: []
 
 ## Purpose
 
-App-target UI/feature module (`PeraWallet/Classes/ViewControllers`). Internal-by-default; see Public API for any cross-module-public surface.
+App-target UI/feature module under `PeraWallet/Classes/ViewControllers/Ledger`. It owns the full
+hardware-wallet (Ledger) experience inside Pera Wallet:
+
+- **Onboarding & tutorial** — `LedgerTutorialViewController`, `LedgerTutorialInstructionListViewController`
+  and the troubleshooting set (`LedgerTroubleshootBluetoothViewController`,
+  `LedgerTroubleshootOpenAppViewController`, `LedgerTroubleshootInstallAppViewController`,
+  `TutorialStepsViewController`) explain how to connect a Ledger Nano X over Bluetooth.
+- **Device discovery & pairing** — `LedgerDeviceListViewController` scans for nearby Ledger
+  peripherals over BLE (CoreBluetooth `CBPeripheral`), drives the `LedgerAccountFetchOperation`, and
+  presents `LedgerConnectionScreen` (an animated bottom sheet) while waiting for the user to approve
+  the connection on-device.
+- **Account selection & verification** — `LedgerAccountSelectionViewController` lists the Algorand
+  accounts derived from the device (single- or multi-select depending on the flow),
+  `LedgerAccountDetailViewController` shows a derived account's assets/rekeyed accounts, and
+  `LedgerAccountVerificationViewController` re-derives each selected address on the device to confirm
+  ownership before importing.
+- **Rekeying** — `RekeyInstructionsScreen` → `RekeyConfirmationScreen` → `RekeySuccessScreen` (and the
+  symmetric `UndoRekeyScreen` → `UndoRekeySuccessScreen`) let a user change an account's signer
+  (auth address) to a Ledger account, a standard account, or a joint account, with
+  `OverwriteRekeyConfirmationSheet`/`UndoRekeyConfirmationSheet` guarding existing rekey state.
+- **Ledger signing UX** — `SignWithLedgerProcessScreen` (driven by `SignWithLedgerProcessDraft`) shows
+  per-transaction progress while the device signs.
+
+Ownership boundary: this module is **UI orchestration only**. It composes screens, view models
+(`*ViewModel`), themes (`*Theme`), and `MacaroonUIKit`/`MacaroonBottomSheet` views, and delegates all
+BLE I/O, account derivation, and transaction signing to services owned by `pera_wallet_core`
+(`LedgerAccountFetchOperation`, `LedgerAccountVerifyOperation`, `TransactionController`,
+`SharedDataController`, `Session`). It is internal to the app target — there is no public library
+surface (see Public API).
 
 ## Public API
 
@@ -141,26 +169,72 @@ App-target UI/feature module (`PeraWallet/Classes/ViewControllers`). Internal-by
 
 ## Invariants
 
-1. Module is part of the app target (internal access); not a public library boundary.
+1. **Verify-before-import.** Accounts derived from a Ledger are never persisted as local
+   `AccountInformation` until each address is re-derived and confirmed on the device by
+   `LedgerAccountVerificationViewController`; `getVerifiedAccounts()` gates the "Add" action and only
+   verified accounts are saved (`saveVerifiedAccounts`).
+2. **No signing without a live connection.** Rekey/undo-rekey screens call
+   `transactionController.canSignTransaction(for:)` and, when `sourceAccount.requiresLedgerConnection()`,
+   present `LedgerConnectionScreen` and start a watchdog timer before composing the transaction. The
+   transparent "Sign with Ledger" sheet is only shown after `didRequestUserApprovalFrom ledger`.
+3. **Single Ledger operation at a time.** Each screen holds at most one `ledgerConnectionScreen` and one
+   `signWithLedgerProcessScreen`; on cancel/reset/success they are dismissed and set to `nil`, and the
+   underlying BLE scan + timer are stopped (`stopBLEScan`, `stopTimer`, `operation.reset()`).
+4. **Multi-select is flow-dependent.** `LedgerAccountSelectionViewController.isMultiSelect` is `true`
+   for `.initializeAccount` and `.addNewAccount` (non-rekey) and `false` for `.rekey`/`.backUpAccount`,
+   so a rekey flow can only choose one new signer.
+5. **BLE must be powered on.** Tapping a device in `LedgerDeviceListViewController` first checks
+   `bleConnectionManager.state == .poweredOn`; otherwise it presents a state-specific BLE error and does
+   not attempt to connect.
 
 ## Behavioral Examples
 
-### Scenario: Placeholder
-- **Given** the app is running
-- **When** this module's flow is entered
-- **Then** it behaves per its screens/controllers
+### Scenario: Pair a Ledger and import accounts
+- **Given** the user opens "Connect Ledger" with `AccountSetupFlow.initializeAccount`
+- **When** `LedgerDeviceListViewController` discovers a peripheral and the user taps it with Bluetooth on
+- **Then** `LedgerAccountFetchOperation` connects, `LedgerConnectionScreen` is shown until on-device
+  approval, accounts are fetched, and the app pushes `LedgerAccountSelectionViewController` (multi-select)
+
+### Scenario: Verify selected accounts before saving
+- **Given** the user selected one or more accounts and tapped "Add"
+- **When** `LedgerAccountVerificationViewController` re-derives each address via `LedgerAccountVerifyOperation`
+- **Then** each row updates to `verified`/`unverified`; only verified accounts are persisted via
+  `setupLocalAccount`/`updateLocalAccount`, push-device details are sent for new accounts, and the user
+  is sent to Home — or to the `failedToImportLedgerAccounts` tutorial if none verified
+
+### Scenario: Rekey an account to a Ledger signer
+- **Given** the user confirms on `RekeyConfirmationScreen` for a source account that requires a Ledger
+- **When** the source account is already rekeyed, `OverwriteRekeyConfirmationSheet` is confirmed, then
+  the rekey transaction is composed and the device approval + `SignWithLedgerProcessScreen` complete
+- **Then** the rekey detail is saved to the local account (`saveRekeyedAccountDetails`), a `rekeyAccount`
+  analytics event is tracked, and `RekeySuccessScreen` is pushed with the back-swipe gesture disabled
 
 ## Error Cases
 
 | Condition | Behavior |
 |-----------|----------|
-| N/A | Documented per screen |
+| Bluetooth off / unauthorized when selecting a device | `presentBLEError` shows a `CBManagerState`-specific banner; no connection attempt |
+| Connection attempt exceeds 10s watchdog timer | Scan stopped, "BLE connection" error banner, and the "pairing issue / re-pair" bottom warning is shown |
+| Ledger app closed / wrong app (`closedApp`) | `ble-error-ledger-connection-open-app-error` banner |
+| Address fetch fails (`failedToFetchAddress`) | `ble-error-fail-fetch-account-address` banner |
+| Indexer lookup fails (`failedToFetchAccountFromIndexer`) | `ledger-account-fetct-error` banner |
+| BLE link error (`failedBLEConnectionError(state)`) | State-derived title/subtitle banner; connection screen dismissed |
+| User cancels on connection/sign sheet | `LedgerConnectionScreen`/`SignWithLedgerProcessScreen` dismissed, BLE scan + timer stopped, loading cleared |
+| Account selection fetch fails | `LedgerAccountSelectionView` enters error state with a "Try again" action that reloads |
+| Verification fails for an account | Row marked `unverified`; flow advances to the next account; on "Add" with zero verified, the `failedToImportLedgerAccounts` tutorial opens |
+| Rekey transaction below minimum / invalid address / SDK error | `displayTransactionError` shows a formatted minimum-amount, invalid-address, or SDK-error banner |
+| Rekey ledger connection drops mid-flow (`.ledgerConnection`) | Connection screen dismissed and the "re-pair" bottom warning shown |
 
 ## Dependencies
 
 | Module | Usage |
 |--------|-------|
-| PeraWalletCore | Shared models/services |
+| pera_wallet_core | `Account`, `AccountInformation`, `AccountSetupFlow`, `LedgerAccountFetchOperation`, `LedgerAccountVerifyOperation`, `TransactionController`, `SharedDataController`, `Session`, `ALGAPI`, `RekeyTransactionSendDraft`, `JointAccountTransactionCoordinator`, `PeraCoreManager`, `ALGAnalytics` |
+| MacaroonUIKit | `ScrollScreen`, `BaseView`, `Button`, stack views, theming/`customizeAppearance`, `calculatePreferredSize` |
+| MacaroonBottomSheet | `BottomSheetScrollPresentable`, `BottomSheetTransition` for Ledger connection / sign / warning sheets |
+| CoreBluetooth | `CBPeripheral`/`CBManagerState` for device discovery and BLE-state error handling |
+| Lottie (via `LottieImageView`) | Animated Ledger connection illustration in `LedgerConnectionScreen` |
+| App shared UI (`BaseViewController`, `BannerController`, `LoadingController`, routing `open(_:by:)`, `BottomWarningViewConfigurator`) | Navigation, banners, loading HUD, and warning sheets |
 
 ## Change Log
 

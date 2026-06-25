@@ -214,7 +214,44 @@ depends_on: []
 
 ## Purpose
 
-App-target UI/feature module (`PeraWallet/Classes/Accounts`). Internal-by-default; see Public API for any cross-module-public surface.
+App-target UI/feature module (`PeraWallet/Classes/Accounts`) covering the
+account-centric screens and flows of Pera Wallet. It owns:
+
+- **Home / Account List** (`List/Screens/HomeViewController`,
+  `AccountList/`) — the portfolio landing screen that lists every local
+  account, total portfolio value, watch-account variants, TestNet banner,
+  and account ordering/sorting.
+- **Account Detail** (`Detail/Main/Screens/AccountDetailViewController`) — a
+  `PageContainer` paging between three tabs: Assets
+  (`Detail/Assets/List/AccountAssetListViewController`), Collectibles
+  (`Detail/Collectibles/`), and Transactions
+  (`Detail/Transactions/`). It is the launch point for send / receive / swap /
+  buy-sell / fund actions, asset management (add, remove, sort, filter), and
+  the account options menu.
+- **Account Information sheets** (`Detail/AccountInformation/`) — per
+  authorization-type bottom sheets (Standard, Watch, Ledger, No-Auth, Rekeyed,
+  Rekeyed-Joint, Any-to-No-Auth-Rekeyed) routed by
+  `AccountInformationFlowCoordinator` based on `account.authorization`.
+- **Rekey / Undo-Rekey flows** (`Detail/Main/Screens/RekeyTo*FlowCoordinator`,
+  `UndoRekeyFlowCoordinator`) — entry points into rekeying an account to a
+  Standard, Ledger, or Joint auth account, and undoing a rekey.
+- **Remove Account flow** (`Detail/RemoveAccount/`) — a back-up warning →
+  confirmation sheet sequence guarded by a chain-of-responsibility authorization
+  validator.
+- **Account Options** (`Options/`) — view/copy passphrase (gated by local auth
+  and a warning screen), rename account, edit account, and options list.
+- **Account selection surfaces** — `AccountSelection/`, `SelectAccount/`,
+  `Select/`, `ReceiverAccountSelection/` (send-transaction receiver picker with
+  contacts + clipboard paste), and `AccountDiscovery/SelectAddress/` (HD-wallet
+  address discovery / import picker).
+- **Rewards detail** (`Rewards/`) and **Account Search Recovery** tool
+  (`AccountSearchRecovery/`).
+
+Ownership boundary: this module is the app-target UI layer for accounts. All
+account/asset model data and persistence live in `pera_wallet_core`
+(`Account`, `AccountHandle`, `SharedDataController`, `Session`); this module
+only renders, navigates, and delegates mutations back to core services and
+flow coordinators.
 
 ## Public API
 
@@ -225,28 +262,84 @@ models) are consumed only within the app target.
 ## Invariants
 
 1. Module is part of the app target (internal access); not a public library boundary.
+2. **Authorization gates actions.** Action-bearing flows check
+   `account.authorization` before proceeding. No-auth accounts cannot send,
+   swap, add assets, buy/sell, or be removed via management; instead an
+   "action not available for account type" banner is presented
+   (`AccountDetailViewController.presentActionsNotAvailableForAccountBanner`).
+3. **Account Information routing is authorization-driven and total.**
+   `AccountInformationFlowCoordinator.launch(_:)` dispatches to exactly one
+   sheet by inspecting `isStandard / isWatch / isLedger / isNoAuth /
+   isJointAccountRekeyed / isRekeyed`, resolving the auth account from
+   `sharedDataController.authAccount(of:)` for rekeyed variants.
+4. **Removing an auth account is blocked while it has dependents.**
+   `RemoveAuthAccountAuthorizationValidator` denies removal (chain-of-
+   responsibility `RemoveAccountAuthorizationResult.denied`) when
+   `sharedDataController.rekeyedAccounts(of:)` is non-empty, surfacing a banner;
+   watch accounts skip the check.
+5. **Passphrase reveal requires authentication + explicit acknowledgement.**
+   Viewing the passphrase routes through local-auth / password confirm
+   (`LocalAuthenticator`, `ChoosePasswordViewController`) and a
+   `PassphraseWarningScreen` before the mnemonic is shown, and the display
+   screen observes screenshot notifications.
 
 ## Behavioral Examples
 
-### Scenario: Placeholder
-- **Given** the app is running
-- **When** this module's flow is entered
-- **Then** it behaves per its screens/controllers
+### Scenario: Opening account information for a rekeyed account
+- **Given** the user is on `AccountDetailViewController` for an account whose
+  `authorization.isRekeyed` is true and whose auth account is known to
+  `SharedDataController`
+- **When** the user taps the account options bar button
+- **Then** `AccountInformationFlowCoordinator` presents
+  `RekeyedAccountInformationScreen` as a bottom sheet exposing rekey-to-ledger,
+  rekey-to-standard, rekey-to-joint, undo-rekey, rescan, and import-connected
+  options; each dismisses the sheet first, then launches the matching flow
+  coordinator.
+
+### Scenario: Removing an auth account that still has rekeyed dependents
+- **Given** the user invokes "Remove account" from the options menu on an
+  account that is the auth account of one or more rekeyed accounts
+- **When** `RemoveAccountFlowCoordinator.launch(_:)` runs
+  `RemoveAuthAccountAuthorizationValidator.validate`
+- **Then** validation returns `.denied`, no removal sheet is shown, and a
+  banner with the localized `remove-auth-account-rekeyed-accounts-error-title`
+  (count-formatted) message is presented.
+
+### Scenario: Sending from a no-auth account
+- **Given** the user is on `AccountDetailViewController` for an account where
+  `authorization.isNoAuth`
+- **When** the user taps Send
+- **Then** `openSendTransactionIfPossible` short-circuits and presents the
+  "action-not-available-for-account-type" error banner instead of launching
+  `SendTransactionFlowCoordinator`.
 
 ## Error Cases
 
 | Condition | Behavior |
 |-----------|----------|
-| N/A | Documented per screen |
+| Action invoked on a no-auth account (send / swap / add asset / buy-sell / management remove) | Error banner `action-not-available-for-account-type`; flow not launched |
+| Remove requested on an auth account with rekeyed dependents | `.denied` result; banner with rekeyed-count error message; removal sheet not shown |
+| Passphrase view requested but local auth fails | Falls back to `ChoosePasswordViewController` confirm; passphrase only shown after confirmation |
+| `rootViewController` unavailable when launching swap/fund tab | `guard` returns early; no navigation occurs |
+| Auth account not resolvable for a rekeyed/joint account | `launch(_:)` returns without presenting a sheet (no crash) |
+| Screenshot taken on passphrase display | Screenshot notification observed; user is warned (no force-unwrap path) |
 
 ## Dependencies
 
 | Module | Usage |
 |--------|-------|
-| PeraWalletCore | Shared models/services |
+| pera_wallet_core | `Account`, `AccountHandle`, `Session`, `SharedDataController`, `LocalAuthenticator`, authorization model, sorting/filter algorithms, `PassphraseUtils`, `PeraCoreManager` |
+| MacaroonUIKit / MacaroonForm / MacaroonBottomSheet / MacaroonUtils | Theming, view models, list layouts, bottom-sheet transitions, base view controllers |
+| Transaction flows (Send/Receive/Swap/Buy-Sell) | `SendTransactionFlowCoordinator`, `ReceiveTransactionFlowCoordinator`, `SwapAssetFlowCoordinator`, `MeldFlowCoordinator`, `BidaliFlowCoordinator`, `MoonPayFlowCoordinator` |
+| Backup module | `BackUpAccountFlowCoordinator`, `AlgorandSecureBackupFlowCoordinator` |
+| Rekey / Ledger | `RekeyTo{Standard,Ledger,Joint}AccountFlowCoordinator`, `UndoRekeyFlowCoordinator`, `RescanRekeyedAccountsCoordinator`, `RekeyingValidator` |
+| Asset management | `AssetAdditionViewController`, `ManageAssetListViewController`, `AssetsFilterSelectionViewController` |
+| QR / Clipboard | `QRCreationDraft` / `.qrGenerator`, `CopyToClipboardController` |
+| Analytics | `ALGAnalyticsScreen`, `analytics.track(.recordAccountDetailScreen(...))` |
 
 ## Change Log
 
 | Change | Date | Version |
 |--------|------|---------|
 | Created | 2026-06-25 | 1 |
+| Enriched Purpose/Invariants/Examples/Errors/Dependencies from source | 2026-06-24 | 1 |

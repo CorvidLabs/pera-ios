@@ -295,7 +295,18 @@ depends_on: []
 
 ## Purpose
 
-App-target UI/feature module (`PeraWallet/Classes/Shared`). Internal-by-default; see Public API for any cross-module-public surface.
+App-target UI/feature module (`PeraWallet/Classes/Shared`) that holds the cross-cutting, reusable UI building blocks and a handful of shared flows used across the rest of the Pera Wallet app. It is the app's de-facto design-system / shared-component layer plus a few self-contained feature flows.
+
+It covers, broadly:
+
+- **Reusable views & cells**: buttons (`Button`, `BadgeButton`, primary/secondary themes), inputs (`FloatingTextInputFieldView`, `MultilineTextInputFieldView`, `SearchInputView`), list/preview cells (`AssetListItemCell`, `CollectibleListItemCell`, `AccountListItemCell`, `AssetPreviewCell`), empty/loading/error states (`NoContentView`, `LoadingView`, `ErrorView`, shimmer/skeleton loaders), result views, separators, toggles, gradients, numpad, stack views, and base classes (`BaseView`, `BaseCollectionViewCell`, `BaseControl`).
+- **Shared screens**: `AlertScreen` (image + title + body + actions sheet), `BottomWarningViewController` (warning sheet), `TutorialViewController` (onboarding/tutorial steps), `ChoosePasswordViewController` (6-digit PIN entry for setup/verify/login/reset), `QRCreationViewController` (render a QR), `QRScannerViewController` / `QRScanOptionsViewController` (camera scan + options), `TransactionOptionsScreen`.
+- **QR resolution pipeline**: a chain-of-responsibility (`QRResolver` / `BaseQRResolver` / `QRResolverManager`) that classifies a scanned string into WalletConnect, Liquid Auth, app deeplink, backup, plain text, URL, Coinbase, or Algorand address results.
+- **Shared coordinator**: `OptOutAssetCoordinator`, which drives the asset opt-out / transfer-balance flow (including Ledger and joint-account signing).
+- **PageContainer**: a paged tab/page-bar container (`PageContainer`, `PageBar`, `PageBarButton`).
+- **Quick actions**: home / account / watch-account / collectible-detail quick-action bars.
+
+Ownership boundary: this module is **internal to the app target** (no cross-module public library boundary). Domain models and services (`Account`, `Asset`, `TransactionController`, `SharedDataController`, `PeraConnect`, feature flags) come from `pera_wallet_core`; presentation primitives, theming, and layout come from the Macaroon family (`MacaroonUIKit`, `MacaroonUtils`, `MacaroonStorySheet`). The module owns the views/view-models/themes and the shared flows; it does not own the underlying account/transaction domain logic.
 
 ## Public API
 
@@ -308,26 +319,53 @@ App-target UI/feature module (`PeraWallet/Classes/Shared`). Internal-by-default;
 
 ## Invariants
 
-1. Module is part of the app target (internal access); not a public library boundary.
+1. Module is part of the app target (internal access by default); it is the shared-component/design-system layer and not a public library boundary.
+2. **Views follow the View + ViewModel + Theme triad.** A `*View` is laid out and styled from a `*Theme` (Macaroon `LayoutSheet`/`StyleSheet`, e.g. `ButtonPrimaryTheme`) and bound from a `*ViewModel`; views read colors/fonts/spacing only through `Colors`, `Fonts`, and theme constants — never hard-coded literals.
+3. **QR resolution is deterministic and order-sensitive.** `QRResolverManager` wires a fixed chain (WalletConnect → LiquidAuth → AppDeeplink → Backup → Text → URL → Coinbase → Address); the first resolver that returns a non-nil `QRResolutionResult` wins, and if no resolver matches the manager returns `.error(.jsonSerialization, resetHandler:)` so the camera can be re-armed.
+4. **PIN entry is a fixed 6-digit code.** `ChoosePasswordViewModel` treats input as valid only when exactly 6 digits are entered, fires its completion handler at that point, and the screen title is driven solely by `ChoosePasswordViewController.Mode` (setup / verify / login / reset / confirm / verifyOld).
+5. **The opt-out coordinator never signs without a presenter and a valid transaction controller.** `OptOutAssetCoordinator` guards on a live `presenter` and `makeTransactionController()`, only opts out when `asset.isEmpty` (otherwise it routes to transfer-balance first), and routes Ledger / joint-account accounts through the dedicated connection / signing screens.
 
 ## Behavioral Examples
 
-### Scenario: Placeholder
-- **Given** the app is running
-- **When** this module's flow is entered
-- **Then** it behaves per its screens/controllers
+### Scenario: Scanning a WalletConnect QR code
+- **Given** the user opens `QRScannerViewController` with `canReadWCSession == true`
+- **When** the camera captures a string that the WalletConnect resolver recognizes
+- **Then** `QRResolverManager.resolveQR` returns `.walletConnect(preferences:)` from the first matching resolver in the chain and the scanner proceeds to establish the session instead of treating it as an address.
+
+### Scenario: Entering a 6-digit PIN
+- **Given** `ChoosePasswordViewController` is shown in `.login` mode
+- **When** the user taps numpad keys filling the 6 password-input circles
+- **Then** each tap marks the next circle `.filled`, and on the 6th digit `ChoosePasswordViewModel` invokes the completion handler with the entered code so the controller can verify it (clearing/erroring the circles on mismatch via `changeStateTo(.error)`).
+
+### Scenario: Opting out of a zero-balance asset
+- **Given** the user triggers opt-out for an asset whose balance `isEmpty`
+- **When** `OptOutAssetCoordinator.optOut(asset:account:)` runs with a live presenter
+- **Then** it presents the `optOutAsset` confirmation sheet, and on approval composes a 0-amount opt-out transaction back to the asset creator, starting blockchain opt-out monitoring; for a non-empty balance it instead presents the transfer-asset-balance sheet first.
 
 ## Error Cases
 
 | Condition | Behavior |
 |-----------|----------|
-| N/A | Documented per screen |
+| Scanned QR matches no resolver in the chain | `QRResolverManager.resolveQR` returns `.error(.jsonSerialization, resetHandler: cameraResetHandler)`; the scanner re-arms the capture session. |
+| A resolver returns `.error(...)` | The manager re-wraps it with the camera `resetHandler` so the user can rescan. |
+| Camera / AVCaptureSession unavailable or permission denied | `QRScannerViewController` cannot start the session; capture stays stopped (no result emitted). |
+| PIN entry has fewer than 6 digits | `ChoosePasswordViewModel.isPasswordValid` is false; the completion handler is not called and input keeps accepting digits. |
+| Opt-out with no live presenter or no transaction controller | `OptOutAssetCoordinator` guards out early; no sheet is shown and no transaction is composed. |
+| Opt-out transaction fails to compose / sign | `transactionController(_:didFailedComposing:)` / `didFailedTransaction:` cancel opt-out monitoring, clear state, and surface a banner via `bannerController.presentErrorBanner`; Ledger errors dismiss the connection screen and show the pairing-issue bottom warning. |
+| Ledger connection lost during opt-out | `.ledgerConnection` transaction error dismisses the Ledger screen and presents the "ledger pairing issue" `BottomWarningViewConfigurator`. |
+| Asset opt-out attempted by the asset creator | `.optOutFromCreator` error → banner with `asset-creator-opt-out-error-message`. |
 
 ## Dependencies
 
 | Module | Usage |
 |--------|-------|
-| PeraWalletCore | Shared models/services |
+| `pera_wallet_core` | Domain models & services: `Account`, `Asset`, `TransactionController`/`TransactionControllerDelegate`, `SharedDataController`, `BlockchainUpdatesMonitor`, `PeraConnect`/WalletConnect, `FeatureFlagServicing`, `DeeplinkConfig`, drafts (`OptOutAssetDraft`, `AssetTransactionSendDraft`, `SendTransactionDraft`), `QRText`, `CurrencyFormatter`. |
+| `MacaroonUIKit` | View/Theme primitives: `BaseView`, `Label`, `ImageView`, `VStackView`, `LayoutSheet`/`StyleSheet`, `Corner`, `TextStyle`, `customizeAppearance`, SnapKit-style constraints. |
+| `MacaroonUtils` / `MacaroonStorySheet` | Utilities (notification observation, async helpers) and the `ScrollScreen`/sheet base for `AlertScreen`. |
+| `AVFoundation` | Camera capture (`AVCaptureSession`, preview layer) for `QRScannerViewController`. |
+| `LiquidAuthSDK` | Liquid Auth QR handling in the scanner / `LiquidAuthQRResolver`. |
+| `Combine` | Reactive plumbing in `OptOutAssetCoordinator` (joint-account action stream) and the scanner. |
+| App-level UI (other `PeraWallet/Classes` modules) | `BaseViewController`/`BaseScrollViewController`, `Screen` routing & `BottomSheetTransition`, `LedgerConnectionScreen`, `SignWithLedgerProcessScreen`, `JointAccountTransactionCoordinator`, `BottomWarningViewConfigurator`, `bannerController`. |
 
 ## Change Log
 

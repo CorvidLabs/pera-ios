@@ -113,7 +113,39 @@ depends_on: []
 
 ## Purpose
 
-App-target UI/feature module (`PeraWallet/Classes/Demo`). Internal-by-default; see Public API for any cross-module-public surface.
+App-target UI/feature module (`PeraWallet/Classes/Demo`). Despite the legacy
+"Demo" directory name, this is core app infrastructure for the wallet's launch
+lifecycle and Home tab. It owns:
+
+- **App launch lifecycle and deeplink routing** — `AppLaunchController` /
+  `ALGAppLaunchController` drive the onboarding → authorization → main-tab
+  state machine, react to app foreground/background transitions, gate session
+  polling, and resolve pending deeplinks (`DeeplinkSource`) such as remote
+  notifications, WalletConnect session/transaction requests, QR text, Meld
+  buy-Algo flows, and external in-app browser links into `AppLaunchUIState`s.
+- **Home tab** (`Home/`) — the accounts/portfolio screen backed by an MVVM
+  diffable data source (`HomeDataController` / `HomeAPIDataController` /
+  `HomeListDataSource`). Sections: portfolio (total value + charts +
+  quick-actions), announcement, carousel/spot banners, and the accounts list.
+- **Quick-action flow coordinators** (`QuickActions/`) — Send, Receive, and
+  Scan-QR flows that route account/asset selection, opt-in, and Ledger signing
+  without a heavyweight router (marked `<todo>` for a future routing refactor).
+- **Transaction-options sheet** (`TransactionOptions/`) — the bottom-sheet menu
+  of account actions (send, receive, buy/sell, swap, scan QR, staking, cards,
+  browse dApps, add asset, copy/show address, more).
+- **Account list-item action buttons** — the large family of
+  `*ListItemButtonViewModel` types feeding context menus / action sheets
+  (rekey, rename, remove, copy address, view passphrase, mute notifications,
+  ASA report, undo rekey, etc.).
+- **Shared UI controllers** — `AlertPresenter` (intro/promo alerts),
+  `ToastPresentationController` / `ToastView`, `ALGCopyToClipboardController`,
+  `UISheet` action sheets, `UserInterfaceStyleController` (light/dark/system),
+  `UIBlockInteraction`, tab-bar items, and `AnnouncementAPIDataController` /
+  `SpotBannersAPIDataController`.
+
+Ownership boundary: this is the app target (internal access). It composes
+`pera_wallet_core` services and other app-target screens; it does not expose a
+public cross-module API.
 
 ## Public API
 
@@ -124,25 +156,71 @@ models) are consumed only within the app target.
 ## Invariants
 
 1. Module is part of the app target (internal access); not a public library boundary.
+2. Launch is gated by `AppAuthChecker.status`: `.requiresAuthentication` forces
+   onboarding (and resets the session), `.requiresAuthorization` forces the
+   authorization (passcode/biometrics) screen, and only `.ready` reaches the
+   main tab UI. Session polling (`sharedDataController.startPolling()`) starts
+   only after the main UI is launched and stops on resign-active / background.
+3. A deeplink that arrives before the app is `.ready` (or before the first run
+   finishes loading accounts) is suspended into a single atomic
+   `pendingDeeplinkSource` slot and resumed when the data controller publishes
+   `.didFinishRunning` or when the app becomes active again; an unresolvable
+   deeplink is re-suspended rather than dropped or crashed.
+4. The Home list is a `NSDiffableDataSourceSnapshot<HomeSectionIdentifier,
+   HomeItemIdentifier>`; all UI updates flow through snapshot diffs driven by
+   `HomeDataController` events — cells are never mutated imperatively.
+5. `AlertPresenter` presents at most one intro/promo alert, and only when the
+   app has launched before, has authentication, has a non-empty account
+   collection, and the presenting screen is the top-of-stack root of the
+   selected tab with nothing already presented.
 
 ## Behavioral Examples
 
-### Scenario: Placeholder
-- **Given** the app is running
-- **When** this module's flow is entered
-- **Then** it behaves per its screens/controllers
+### Scenario: Cold launch with passcode into Home
+- **Given** the user has an authenticated account and a passcode set
+- **When** the app launches (`launch(deeplinkWithSource:)`)
+- **Then** `AppAuthChecker` reports `.requiresAuthorization`, the authorization
+  screen is shown, and on success `launchMainAfterAuthorization` swaps to the
+  main tab bar and starts shared-data polling.
+
+### Scenario: Send quick action from an account
+- **Given** the user taps Send on the Home portfolio quick actions
+- **When** `SendTransactionFlowCoordinator.launch()` runs with no preselected
+  account/asset
+- **Then** it presents account selection, then asset selection, then the
+  Send Transaction screen, carrying the chosen `Account`/`Asset` forward; for a
+  joint account it presents the pending-transaction overlay instead.
+
+### Scenario: Scanning an asset-transfer QR for an unknown asset
+- **Given** the user scans a QR encoding an asset transfer request
+- **When** `ScanQRFlowCoordinator` decodes `mode == .assetRequest` and the asset
+  is not cached on any authorized account
+- **Then** it presents an asset-action-confirmation bottom sheet (close-only)
+  instead of routing into the send flow.
 
 ## Error Cases
 
 | Condition | Behavior |
 |-----------|----------|
-| N/A | Documented per screen |
+| App deleted but keychain retains keys (`.requiresAuthentication`) | Session is reset (contacts preserved) and onboarding is launched |
+| Deeplink parsing fails for a recoverable reason (watch-account opt-in, pending opt-in/opt-out, account/asset not found) | Notification UI surfaced with the error; otherwise the deeplink is re-suspended |
+| QR scan fails / invalid QR (`QRScannerError`) | Simple alert "scan a valid QR" shown on the visible screen |
+| Scanned asset-transfer QR references an uncached asset | Asset-support confirmation sheet shown; send flow not started |
+| Opt-in target already owns the asset | Info banner "you already own this asset"; flow aborted |
+| Account/total-account limit reached on add-account/recover QR | Error banner with account-limit message; addition aborted |
+| Opt-in asset fetch returns empty / network failure | Error banner (`asset-confirmation-not-found` / `-not-fetched`); loading stopped |
+| Send min-amount / invalid-address / SDK / Ledger-connection transaction errors | Mapped to the corresponding error banner; Ledger errors reopen pairing-issue sheet |
+| Portfolio value cannot be calculated | `PortfolioCalculationErrorViewModel` / info screen explains the failed/partial calculation |
 
 ## Dependencies
 
 | Module | Usage |
 |--------|-------|
-| PeraWalletCore | Shared models/services |
+| pera_wallet_core (`pera_wallet_core`) | `Session`, `ALGAPI`, `SharedDataController`, `AppAuthChecker`, `DeepLinkParser`, `PeraConnect`, `Account`/`Asset` models, `TransactionController`, currency formatting |
+| MacaroonApplication / MacaroonUIKit / MacaroonUtils | App lifecycle host, view/theme/cell primitives, `TabBarButtonItem`, diffable data source, `@Atomic`, `Storable` |
+| App-target screens (via `Screen` router) | Account/asset selection, send/opt-in/key-reg transaction screens, QR scanner, Ledger connection & sign screens, account recovery/import, swap flow |
+| WalletConnect / PeraConnect | Session-request and transaction/arbitrary-data sign-request deeplinks |
+| Meld | Buy-Algo (`MeldDraft`) deeplink and quick action |
 
 ## Change Log
 

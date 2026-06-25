@@ -177,7 +177,16 @@ depends_on: []
 
 ## Purpose
 
-App-target UI/feature module (`PeraWallet/Classes/Collectibles`). Internal-by-default; see Public API for any cross-module-public surface.
+App-target UI/feature module (`PeraWallet/Classes/Collectibles`) implementing Pera Wallet's NFT / collectible-asset experience. It owns four primary flows plus shared media playback:
+
+- **List / Gallery** (`List/`) — `CollectiblesViewController` hosts `CollectibleListViewController`, a `UICollectionView` gallery of an account's collectible (NFT) assets. Supports a grid/list layout switch (`CollectibleGalleryUIStyle`), search, pending (opting-in/out) items, an empty/no-content state with a receive action, and a sort sub-screen (`Sort/SortCollectibleListViewController`). The bar-button "add" opens the receive flow; an opt-in banner button toggles based on header visibility.
+- **Detail** (`Detail/`) — `CollectibleDetailViewController` renders a single `CollectibleAsset`: a paged media preview (image / video / audio / GIF / WebP / 3D), name, description (truncatable show-more/less), properties, asset ID, creator account, and account-information rows. It drives opt-in / opt-out, send, copy-media, save-to-photos, and share actions, including Ledger-signed transactions via `TransactionController`.
+- **Receive** (`Receive/`) — a two-step select-account (`ReceiveCollectibleAccountListViewController`) then select-asset (`ReceiveCollectibleAssetListViewController`) flow that opts the chosen account in to a collectible so it can be received.
+- **Send** (`Send/`) — `SendCollectibleViewController` and the `ApproveCollectibleTransactionViewController` bottom sheet compose, preview, and approve a collectible transfer (including ask-receiver-to-opt-in handling and Ledger signing).
+- **Filter** (`Filter/`) — `CollectiblesFilterSelectionViewController` toggles persisted display options (show opted-in assets, show watch-account assets) backed by `CollectibleFilterOptionsCache`.
+- **FullScreen** (`FullScreen/`) and **3DCard** (`3DCard/`) — full-screen image/video viewers and a 3D card viewer reachable from the media preview.
+
+Ownership boundary: this is internal app-target UI built on the MVVM + DataController/DataSource + Theme conventions of the Pera Wallet app. It consumes models, services, and transaction infrastructure from `pera_wallet_core`; it does not expose a public library surface.
 
 ## Public API
 
@@ -188,25 +197,57 @@ App-target UI/feature module (`PeraWallet/Classes/Collectibles`). Internal-by-de
 ## Invariants
 
 1. Module is part of the app target (internal access); not a public library boundary.
+2. State-changing collectible actions (send, opt-in, opt-out) are blocked on accounts that cannot authorize: when `account.authorization.isNoAuth` an error banner ("action not available for account type") is shown instead. Watch accounts surface a read-only gallery (the watch-account filter governs whether their collectibles appear at all).
+3. Quick actions reflect the on-chain opt-in status: the detail screen only shows the opt-in quick action when `accountCollectibleStatus == .notOptedIn` and the opt-out quick action when `== .optedIn`; after a successful opt-in/opt-out the quick action is removed and the list is reloaded.
+4. Opt-in / opt-out / send transactions are monitored via `sharedDataController.blockchainUpdatesMonitor`; on any failure, cancellation, or Ledger reset the corresponding monitoring is cancelled and the loading indicator is stopped, so the UI never stays stuck "loading".
+5. List and detail stay in sync through `NotificationCenter`: opting in/out or sending posts `CollectibleListLocalDataController.didAddCollectible` / `.didRemoveCollectible` / `.didSendCollectible`, which the local data controller observes to reload the gallery.
+6. Switching the gallery layout (grid ⇄ list) temporarily disables list updates (`canPerformUpdates`) to avoid inconsistent snapshot application during the transition.
 
 ## Behavioral Examples
 
-### Scenario: Placeholder
-- **Given** the app is running
-- **When** this module's flow is entered
-- **Then** it behaves per its screens/controllers
+### Scenario: Receiving a collectible from an empty gallery
+- **Given** an authorizable account is showing the collectible gallery
+- **When** the user taps the "+" (add) bar button, or the receive action in the no-content state (`.didTapReceive`)
+- **Then** `CollectiblesViewController` presents `ReceiveCollectibleAccountListViewController`; selecting an account proceeds to `ReceiveCollectibleAssetListViewController`, and confirming an asset composes an opt-in transaction so the collectible can be received.
+
+### Scenario: Opting out of a collectible from the detail screen
+- **Given** the collectible detail screen for an account that is opted in (`accountCollectibleStatus == .optedIn`)
+- **When** the user triggers the opt-out quick action and approves the bottom-sheet confirmation
+- **Then** `CollectibleDetailTransactionController.optOutAsset` composes the transaction (prompting Ledger connect/sign if `account.requiresLedgerConnection()`); on success the quick action is removed, `didRemoveCollectible` is posted, the data controller reloads, and the appropriate `Event` (`.didOptOutAssetFromAccount` / `.didOptOutFromAssetWithQuickAction`) is emitted to the host.
+
+### Scenario: Sending a collectible to a receiver that has not opted in
+- **Given** the send-collectible flow with a valid receiver address entered
+- **When** the user submits and the receiver has not opted in to the asset
+- **Then** `SendCollectibleViewController` presents the ask-receiver-to-opt-in bottom sheet rather than broadcasting; once the receiver opts in (or for a normal receiver) the approve-transaction sheet (`ApproveCollectibleTransactionViewController`) is shown for final confirmation and signing.
 
 ## Error Cases
 
 | Condition | Behavior |
 |-----------|----------|
-| N/A | Documented per screen |
+| Gallery/list fetch fails (`.didFinishRunning(hasError: true)`) | `CollectiblesViewController` presents a bottom actionable fetch-error banner with a retry action; dismissed on the next successful run. |
+| Collectible detail API response fails (`.didResponseFail`) | Bottom fetch-error banner ("generic api error" + message); retry re-invokes `dataController.load()`. |
+| Copy-image media download fails (`.didImageResponseFail`) | Loading stops; fetch-error banner with retry that restarts loading and re-requests the image data to copy. |
+| Save-media download fails (`.didMediaResponseFail`) | Loading stops; fetch-error banner with retry that re-downloads the media for the displayed media's extension. |
+| Action attempted on a no-auth account (send / opt-in / opt-out) | Error banner "action not available for account type"; no transaction is composed. |
+| Opt-out attempted on a collectible whose creator is the account (`.optOutFromCreator`) | Error banner "asset-creator-opt-out-error-message". |
+| Transaction amount below minimum (`.minimumAmount`) | Error banner with the formatted minimum Algo amount required. |
+| Ledger pairing/connection failure (`.ledgerConnection`) | Ledger connection screen is dismissed and a Ledger pairing-issue warning sheet is presented. |
+| Transaction compose/broadcast network or SDK error | `transactionController(_:didFailedComposing:)` / `didFailedTransaction:` stop loading, cancel opt-in/out monitoring, and present an error banner with the API/SDK description. |
+| Receiver not opted in (send flow) | Ask-receiver-to-opt-in bottom sheet is presented instead of broadcasting the transfer. |
 
 ## Dependencies
 
 | Module | Usage |
 |--------|-------|
-| PeraWalletCore | Shared models/services |
+| `pera_wallet_core` | Domain models (`CollectibleAsset`, `Account`, `AssetDecoration`, `Media`), `SharedDataController` + `blockchainUpdatesMonitor`, `AccountsServiceable`, currency formatting, and analytics. |
+| `TransactionController` (app + core) | Composes and broadcasts opt-in / opt-out / send transactions; drives Ledger connection and sign-with-Ledger flows. |
+| `CollectibleDetailTransactionController` (this module) | Wraps `TransactionController` for the detail screen's opt-in/opt-out, including joint-account transaction handling. |
+| Screen routing (`Screen` / `open(_:by:)`) | Navigation to `sendTransaction`, `optInAsset`, `optOutAsset`, `asaDetail`, `asaDiscovery`, share activity, and the receive sub-flows. |
+| `CopyToClipboardController` | Copy address / asset ID / URL / image to clipboard. |
+| `BottomActionableBannerController`, `BottomSheetTransition`, `BannerController` | Error banners, bottom-sheet presentation (opt-in/out, approve, ask-to-opt-in, Ledger, warnings). |
+| MacaroonUIKit / MacaroonURLImage / MacaroonUtils / SnapKit | Layout, theming (`*Theme` files), `calculatePreferredSize` sizing, remote image loading, and layout constraints. |
+| AVFoundation / SceneKit (via media + 3DCard) | Video/audio playback (`VideoPlayerView`, `AudioPlayerView`) and 3D collectible viewing. |
+| `JointAccountTransactionCoordinator` | Coordinates opt-in/send transactions for joint (shared) accounts in the receive/send flows. |
 
 ## Change Log
 

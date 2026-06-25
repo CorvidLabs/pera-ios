@@ -152,7 +152,21 @@ depends_on: []
 
 ## Purpose
 
-App-target UI/feature module (`PeraWallet/Classes/Swap`). Internal-by-default; see Public API for any cross-module-public surface.
+App-target UI/feature module (`PeraWallet/Classes/Swap`) implementing the in-wallet asset swap experience (powered by the Pera swap aggregator / Tinyman-style pools on Algorand). It lets a user exchange one Algorand asset (the *user/in* asset) for another (the *pool/out* asset) on a chosen account.
+
+The flow is driven by `SwapAssetFlowCoordinator`, a UIKit coordinator (`<todo> remove after routing refactor`) instantiated by the tab container `SwapContainerVC`. The coordinator owns navigation, transaction signing (standard and Ledger), analytics, and swap-status reporting back to the API. Screens it presents/pushes:
+
+- **`SwapIntroductionScreen`** — one-time user-agreement / terms gate. Acceptance is persisted in `SwapDisplayStore`; only shown until `isConfirmedSwapUserAgreement` is true.
+- **`SwapAccountSelectionListScreen`** — account picker (skipped when the draft already carries an account); validates opt-in to the in/out assets.
+- **`SwapAssetScreen`** — the main swap composer: in/out asset selection, amount entry, live quote display, available-balance validation, and the Swap CTA.
+- **`SelectAssetScreen`** — asset pickers for the in asset (local opted-in assets) and out/pool asset (assets supported by the swap providers); offers opt-in for non-held pool assets.
+- **`EditSwapAmountScreen`** / **`EditSwapSlippageScreen`** — bottom-sheet editors for amount-percentage and slippage tolerance.
+- **`ConfirmSwapScreen`** — quote review (price, price impact, minimum received, exchange fee, Pera fee, slippage) before signing.
+- **`LoadingScreen`** → **`SwapAssetSuccessScreen`** → optional **`SwapSummaryScreen`** — execution, success, and detailed summary with a Pera Explorer deep link.
+
+Shared swap state (selected assets, amount percentage, slippage tolerance) lives in `SwapDataStore`/`SwapDataLocalStore`, an observable store passed between screens. `ALGSwapController` (conforming to `SwapController`) coordinates quote loading, transaction grouping, signing via `SwapTransactionSigner`, upload, and status updates.
+
+Ownership boundary: this module owns the swap UI/navigation and the app-side swap orchestration. The aggregator/quote/transaction models and API endpoints (`SwapQuote`, `SwapProvider`, `PeraSwapAmount`, `api.getProviders`, `api.calculateSwapAmount`, `api.updateSwapStatus`, etc.) belong to `pera_wallet_core`. Internal-by-default; see Public API for the only cross-module-public surface.
 
 ## Public API
 
@@ -163,25 +177,53 @@ App-target UI/feature module (`PeraWallet/Classes/Swap`). Internal-by-default; s
 ## Invariants
 
 1. Module is part of the app target (internal access); not a public library boundary.
+2. The swap introduction/agreement gate is shown until accepted: while `SwapDisplayStore.isConfirmedSwapUserAgreement` is `false`, `launch()` opens `SwapIntroductionScreen` and does not start the swap flow. Accepting sets the flag (persisted) and proceeds.
+3. A swap requires an account opted in to the *in* asset, and (for the *out* asset) either an existing opt-in or a completed opt-in. Selecting an account not opted in to the in asset surfaces an error banner and aborts; a non-held pool asset routes through `openOptInAsset` before it can be selected.
+4. The in and out assets are always distinct: pool-asset selection filters exclude the current user asset (and user-asset selection excludes the pool asset) via `AssetExcludeFilterAlgorithm`, and zero-balance in-assets are filtered out (`AssetZeroBalanceFilterAlgorithm`).
+5. Every executed swap reports its lifecycle to the backend: completion fires `analytics.swapCompleted` while failures (blockchain or network) call `logFailedSwap`, which tracks `swapFailed`, posts `updateSwapStatus(.failed, …)` for v2 swaps, and patches the quote via `updateSwapQuote`. Loading/error screens only act when the current visible screen is the expected `LoadingScreen`.
 
 ## Behavioral Examples
 
-### Scenario: Placeholder
-- **Given** the app is running
-- **When** this module's flow is entered
-- **Then** it behaves per its screens/controllers
+### Scenario: First-time user accepts the swap agreement
+- **Given** the user opens the Swap tab and has never accepted the swap terms (`isConfirmedSwapUserAgreement == false`)
+- **When** `SwapContainerVC` appears and `SwapAssetFlowCoordinator.launch()` runs
+- **Then** `SwapIntroductionScreen` is presented; tapping the primary action sets `isConfirmedSwapUserAgreement = true`, dismisses the sheet, and relaunches into the swap tab; tapping close dismisses without starting the flow.
+
+### Scenario: Completing a swap on a standard (non-Ledger) account
+- **Given** an opted-in account with an in asset, an out asset, and an amount producing a valid quote on `SwapAssetScreen`
+- **When** the user taps Swap, reviews the quote on `ConfirmSwapScreen`, and taps Confirm
+- **Then** the coordinator starts loading and calls `swapController.signTransactions(...)`; on `didSignAllTransactions` it opens the `LoadingScreen`, and on `didCompleteSwap` it tracks `swapCompleted`, shows `SwapAssetSuccessScreen`, and offers View Detail (Pera Explorer group link) / Summary / Done.
+
+### Scenario: Selecting a pool (out) asset the account does not hold
+- **Given** the user is on the pool-asset `SelectAssetScreen`
+- **When** they pick an asset the account is not opted in to
+- **Then** `openOptInAsset` presents the opt-in bottom sheet; approving publishes `didApproveOptInToAsset` / `didSelectPoolAsset` and pops back to `SwapAssetScreen` with the new out asset set.
 
 ## Error Cases
 
 | Condition | Behavior |
 |-----------|----------|
-| N/A | Documented per screen |
+| Selected account not opted in to the in asset | Error banner `swap-asset-not-opted-in-error`; account selection aborts (no flow start). |
+| In-asset amount exceeds available balance (after fee/min-balance reservation) | `SwapAvailableBalanceValidator` emits `.failure(insufficientAlgoBalance / insufficientAssetBalance)`; quote not requested, swap CTA blocked. |
+| Pera fee / quote unavailable during balance validation | `.failure(.unavailablePeraFee(...))`; user cannot proceed until a valid quote loads. |
+| Quote load fails (`SwapAssetDataController.Error`) | `onQuoteLoaded(nil, error)`; `SwapErrorView` / `SwapAPIErrorViewModel` shown, no transactions built. |
+| On-chain transaction fails (`didFailTransaction`) | `swapController.clearTransactions()`, stop loading, `logFailedSwap(... .blockchainError)`, push `SwapUnexpectedErrorViewModel`; primary action returns to `SwapAssetScreen` and refetches the quote. |
+| Network failure during submission (`didFailNetwork`) | Clear transactions, stop loading, `logFailedSwap(error:)`, push `SwapAPIErrorViewModel`; primary action returns to `SwapAssetScreen` and refetches the quote. |
+| Signing error (`didFailSigning`) | API errors → error banner via `displaySigningError`; Ledger errors routed through `displayLedgerError` (cancelled / app-closed / BLE / fetch-address banners) and screens dismissed. |
+| Ledger reset / cancel during signing | Clear transactions, stop loading, dismiss `LedgerConnectionScreen` / `SignWithLedgerProcessScreen`. |
+| High price impact (≥ 5/10/15% per `PriceImpactLimit`) | Confirm screen surfaces price-impact warning styling; user must acknowledge before confirming. |
 
 ## Dependencies
 
 | Module | Usage |
 |--------|-------|
-| PeraWalletCore | Shared models/services |
+| pera_wallet_core | Swap domain models & API: `SwapQuote`, `SwapProvider(V2)`, `PeraSwapAmount`, `SwapTransactionGroup`, `Account`/`Asset`/`AssetDecoration`, `ALGAPI` (`getProviders`, `calculateSwapAmount`, `updateSwapStatus`, `updateSwapQuote`, `swapTopPairs`, `getSwapHistory`, `fetchAssetList`), `SharedDataController`, `CurrencyFormatter`, `FeatureFlagServicing`, `HDWalletStorable`. |
+| Ledger / signing (app) | `SwapTransactionSigner`, `LedgerConnectionScreen`, `SignWithLedgerProcessScreen`, `LedgerOperationError`. |
+| Shared UI infrastructure (app) | `BaseViewController`, `Screen`/routing, `BottomSheetTransition`, `AlertUITransition`, `LoadingScreen`, `ErrorScreen`, `BannerController`, `LoadingController`, `OptInAssetDraft`/opt-in screen, `UISheet`. |
+| Macaroon (MacaroonUIKit/MacaroonUtils) | View theming, `calculatePreferredSize` sizing, weak-observer publishing. |
+| Magpie (MagpieCore/Hipo/Exceptions) | API networking and `HIPNetworkError` / `HIPTransactionError` error modeling. |
+| Analytics | `ALGAnalytics` events: `swapCompleted`, `swapFailed`, `swapBannerTry`, `swapBannerLater`. |
+| AlgorandWeb | `PeraExplorer.group` deep link for swap transaction details. |
 
 ## Change Log
 

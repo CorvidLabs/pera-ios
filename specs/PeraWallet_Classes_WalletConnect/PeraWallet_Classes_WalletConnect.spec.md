@@ -207,7 +207,13 @@ depends_on: []
 
 ## Purpose
 
-App-target UI/feature module (`PeraWallet/Classes/WalletConnect`). Internal-by-default; see Public API for any cross-module-public surface.
+App-target UI/feature module (`PeraWallet/Classes/WalletConnect`) that renders every user-facing surface of the WalletConnect integration (both WalletConnect v1 and v2). It owns three flow areas:
+
+- **Connection** (`Connection/`): the bottom-sheet `WCSessionConnectionScreen` that a dApp pairing opens after a QR scan / deep link. It shows the dApp profile (name, URL, logo), the requested permissions (supported methods/events), and a list of the user's accounts so they can pick which account(s) to authorize before approving or rejecting the session. Single- vs multi-account selection is driven by the `isAccountMultiselectionEnabled` flag derived from the pairing URI. On approval it emits `performConnect(accounts:)`; on reject it emits `performCancel`.
+- **Sessions** (`Sessions/`): management surfaces for already-connected sessions — `WCSessionListViewController` (the Settings > WalletConnect list with per-row live connection status and a "Disconnect all" action), the compact `WCSessionShortListViewController`, and `WCSessionDetailScreen` (dApp profile, connected accounts, advanced permissions, connection/expiration dates, live ping-based status check, and disconnect). Also hosts confirmation sheets (`WCSessionConnectionSuccessfulSheet`, `WCTransactionSignSuccessfulSheet`, `WCAdvancedPermissionsInfoSheet`, `ExtendWCSessionValiditySheet`).
+- **Transaction** (`Transaction/`): the transaction-signing request surfaces. `WCMainTransactionScreen` is the host that validates an incoming `WalletConnectTransactionSignRequestDraft`, fetches asset details and transaction params, signs each `WCTransaction` (including Ledger-backed and rekeyed accounts via `WCTransactionSigner`), and reports back to its delegate. It renders either a single-request fragment (`WCSingleTransactionRequestScreen`) or a multi/grouped fragment (`WCUnsignedRequestScreen`), plus per-type detail screens for Algos, Asset, Asset-addition, Asset-config (create/reconfigure/delete), App-call, Key-registration, Group, and Arbitrary-data signing requests, each with a dApp-detail and JSON-display drill-in.
+
+Ownership boundary: this module is presentation-only and internal to the app target. It does not own the WalletConnect protocol stack, session persistence, or signing crypto — those live behind `PeraConnect` / `walletConnectCoordinator` and `WCTransactionSigner` in `pera_wallet_core`. Routing into these screens is performed by `Router`/`Screen` (e.g. `.wcConnection`, `.wcMainTransaction`, `.wcSessionDetail`), not by this module itself.
 
 ## Public API
 
@@ -217,26 +223,57 @@ App-target UI/feature module (`PeraWallet/Classes/WalletConnect`). Internal-by-d
 
 ## Invariants
 
-1. Module is part of the app target (internal access); not a public library boundary.
+1. Module is part of the app target (internal access); not a public library boundary. View controllers are constructed and pushed/presented by `Router`, never instantiated directly across modules.
+2. A connection request cannot be approved with zero accounts: the primary "Connect" action stays disabled until `dataController.isPrimaryActionEnabled` is true. When `isAccountMultiselectionEnabled` is false the connection screen enforces exactly one selected account (selecting a new account deselects the previous one); when a session offers a single eligible account it is auto-selected.
+3. A transaction request is signed only after it passes validation: `WCMainTransactionScreen` rejects (rather than signs) when the group is invalid (`failedValidation`), the network does not match the device node (`nodeMismatch`), no signer account is found (`transactionSignerNotFound`), asset details cannot be fetched, or a future-dated transaction is declined. Rejection is idempotent — once `isRejected` is set, no second reject sheet or sign is issued.
+4. Signing is all-or-nothing for the request: the count of `signedTransactions` must equal `transactions.count` before `sendSignedTransactions()` runs; otherwise the request is rejected as `unsignable`.
+5. Ledger-backed or rekeyed signer accounts force a Ledger connection flow (`LedgerConnectionScreen` → `SignWithLedgerProcessScreen`) before each affected transaction is signed; leaving the screen disconnects the Ledger if any transaction required it.
+6. Live session status in the list/detail screens is derived from pings through `peraConnect.walletConnectCoordinator` (v1 connection check; v2 `pingSession` with a timeout repeater) — the UI never assumes a session is connected without confirmation.
 
 ## Behavioral Examples
 
-### Scenario: Placeholder
-- **Given** the app is running
-- **When** this module's flow is entered
-- **Then** it behaves per its screens/controllers
+### Scenario: Approving a dApp connection
+- **Given** a dApp pairing URI has been scanned and `WCSessionConnectionScreen` is presented as a bottom sheet showing the dApp profile, requested permissions, and the user's accounts
+- **When** the user selects one or more accounts (honoring single- vs multi-select) and taps the primary "Connect" action
+- **Then** the screen emits `Event.performConnect(accounts:)` with the selected `PublicKey` addresses and the router completes the WalletConnect session approval
+
+### Scenario: Signing a single transaction request
+- **Given** `WCMainTransactionScreen` has loaded a `WalletConnectTransactionSignRequestDraft`, fetched asset details and transaction params, and validated the network/group
+- **When** the user taps confirm on the single-request fragment
+- **Then** each `WCTransaction` is signed via `WCTransactionSigner` (prompting Ledger if required), and once all transactions are signed `dataSource.signTransactionRequest(signature:)` returns them to the dApp and the delegate is notified `didSigned`
+
+### Scenario: Disconnecting from a session
+- **Given** `WCSessionDetailScreen` is shown for a connected v1 or v2 session
+- **When** the user taps the secondary "Disconnect" action
+- **Then** the screen calls `peraConnect.disconnectFromSession(...)`, and on the matching `didDisconnectFromV1/V2` PeraConnect event it stops loading and emits `Event.didDisconnect`, popping back to the list with a success banner
 
 ## Error Cases
 
 | Condition | Behavior |
 |-----------|----------|
-| N/A | Documented per screen |
+| Group transaction fails grouping validation | Reject sheet shown; request rejected with `.rejected(.failedValidation)` |
+| Device node does not match transaction network | Request rejected with `.unauthorized(.nodeMismatch)` |
+| No signer account found for a transaction | Request rejected with `.unauthorized(.transactionSignerNotFound)` |
+| Asset detail fetch fails (indexer + node fallback) | Request rejected with `.invalidInput(.unableToFetchAsset)`; missing asset id rejects with `.invalidInput(.asset)` |
+| Transaction is future-dated | Future-transaction warning sheet; user may accept (sign) or cancel |
+| Signing API error / Ledger error | Error banner (or Ledger-specific banner); API errors reject as `.unsignable`, Ledger cancel/closed-app/BLE surfaced via `displayLedgerError` |
+| Signed count ≠ requested count after signing loop | Request rejected with `.invalidInput(.unsignable)` |
+| v2 session ping times out (list/detail) | Cell status set to `.failed`; detail status repeater resets UI to `.idle` after delay |
+| Disconnect-all / disconnect fails | `didFailDisconnectingFromSession` → generic error banner |
+| QR scan of an invalid WC URI | Alert "should scan valid QR" via `QRScannerViewControllerDelegate` |
 
 ## Dependencies
 
 | Module | Usage |
 |--------|-------|
-| PeraWalletCore | Shared models/services |
+| pera_wallet_core | `PeraConnect`/`walletConnectCoordinator` (pair, ping, disconnect, session events), `WCSession`/`WalletConnectV2Session` models, `WCTransaction`, `WCTransactionSigner`, `PublicKey`, drafts |
+| Router / Screen (app routing) | Entry points `.wcConnection`, `.wcMainTransaction`, `.wcSessionDetail`, `.qrScanner`; push/present/pop navigation |
+| SharedDataController | Account collection, asset detail collection, transaction params, signer-account resolution |
+| Ledger UI (`LedgerConnectionScreen`, `SignWithLedgerProcessScreen`) | Hardware-wallet connection and signing progress for Ledger/rekeyed accounts |
+| MacaroonUIKit / MacaroonBottomSheet / MacaroonBottomOverlay / SnapKit | View composition, theming, bottom-sheet & overlay presentation, layout |
+| MagpieHipo / AlgorandSDK | API error typing (`HIPNetworkError`/`HIPTransactionError`), transaction id computation, asset fetch |
+| QRScannerViewController | Reading WalletConnect pairing URIs to start a session |
+| Analytics | Recording/tracking transaction-request load/appear/confirm events |
 
 ## Change Log
 
