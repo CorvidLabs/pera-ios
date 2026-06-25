@@ -318,7 +318,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Import from Pera Web"
+            "value": "Import from Corvid Web"
           }
         }
       }
@@ -328,7 +328,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "I want to import Algorand accounts from Pera Web"
+            "value": "I want to import Algorand accounts from Corvid Web"
           }
         }
       }
@@ -1284,7 +1284,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Store your 12-word key securely.\nFind out how with Pera Learn."
+            "value": "Store your 12-word key securely.\nFind out how with Corvid Learn."
           }
         }
       }
@@ -1344,7 +1344,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Learn more with Pera Learn"
+            "value": "Learn more with Corvid Learn"
           }
         }
       }
@@ -1574,7 +1574,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "This ASA was automatically verified through the Pera ASA Verification program."
+            "value": "This ASA was automatically verified through the Corvid ASA Verification program."
           }
         }
       }
@@ -2474,7 +2474,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Show on Peraexplorer"
+            "value": "Show on Corvidexplorer"
           }
         }
       }
@@ -2554,7 +2554,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pera Explorer"
+            "value": "Corvid Explorer"
           }
         }
       }
@@ -3758,7 +3758,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your Receiving Wallet is not opted in. It needs to opt-in to receive the asset.\nPera simplifies this process by combining multiple transactions for a seamless experience."
+            "value": "Your Receiving Wallet is not opted in. It needs to opt-in to receive the asset.\nCorvid Wallet simplifies this process by combining multiple transactions for a seamless experience."
           }
         }
       }
@@ -4214,7 +4214,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "View Transaction Detail in Pera Explorer"
+            "value": "View Transaction Detail in Corvid Explorer"
           }
         }
       }
@@ -5369,7 +5369,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "verification@perawallet.app"
+            "value": "verification@corvidwallet.app"
           }
         }
       }
@@ -6309,7 +6309,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pera employees will NEVER ask for my Recovery Phrase."
+            "value": "Corvid Wallet employees will NEVER ask for my Recovery Phrase."
           }
         }
       }
@@ -8465,7 +8465,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Swap in Pera"
+            "value": "Swap in Corvid Wallet"
           }
         }
       }
@@ -8656,7 +8656,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pera Fee"
+            "value": "Corvid Fee"
           }
         }
       }
@@ -9081,7 +9081,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "View Transaction Detail in PeraExplorer"
+            "value": "View Transaction Detail in CorvidExplorer"
           }
         }
       }
@@ -9658,7 +9658,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Create Pera Card"
+            "value": "Create Corvid Card"
           }
         }
       }
@@ -11613,7 +11613,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open in PeraExplorer"
+            "value": "Open in CorvidExplorer"
           }
         }
       }
@@ -12253,7 +12253,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Corvid Wallet's Algorand Standard Asset (ASA) Verification Program allows ASA creators to get automatically verified by validating that they are the owners of the asset.\nThe main purpose of ASA Verification is to prevent an ASA from pretending to be affiliated with and acting as the token for a project it’s not connected to.\nASA Verification is not an endorsement of the project. Neither Algorand nor Pera would ever use the verification process to endorse a project."
+            "value": "Corvid Wallet's Algorand Standard Asset (ASA) Verification Program allows ASA creators to get automatically verified by validating that they are the owners of the asset.\nThe main purpose of ASA Verification is to prevent an ASA from pretending to be affiliated with and acting as the token for a project it’s not connected to.\nASA Verification is not an endorsement of the project. Neither Algorand nor Corvid Wallet would ever use the verification process to endorse a project."
           }
         }
       }
@@ -12553,7 +12553,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "You attempted to connect to a malicious website. Pera blocked this connection for your security."
+            "value": "You attempted to connect to a malicious website. Corvid Wallet blocked this connection for your security."
           }
         }
       }
@@ -13245,7 +13245,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "PeraExplorer"
+            "value": "CorvidExplorer"
           }
         }
       }
@@ -13795,7 +13795,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "This application does not recognize the QR code format (version: %@). Please make sure that both devices are using the latest version of Pera."
+            "value": "This application does not recognize the QR code format (version: %@). Please make sure that both devices are using the latest version of Corvid Wallet."
           }
         }
       }
@@ -13805,7 +13805,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Go to “web.perawallet.app” on your desktop"
+            "value": "Go to “web.corvidwallet.app” on your desktop"
           }
         }
       }
@@ -13835,7 +13835,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Select the accounts you want to import to Pera Mobile and generate your QR"
+            "value": "Select the accounts you want to import to Corvid Wallet and generate your QR"
           }
         }
       }
@@ -13845,7 +13845,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Get your QR ready on Pera Web"
+            "value": "Get your QR ready on Corvid Web"
           }
         }
       }
@@ -13855,7 +13855,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scan QR code on Pera Web"
+            "value": "Scan QR code on Corvid Web"
           }
         }
       }
@@ -13865,7 +13865,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Explore Pera Mobile"
+            "value": "Explore Corvid Wallet"
           }
         }
       }
@@ -13878,13 +13878,13 @@
               "one": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "%lld account was imported from Pera Web"
+                  "value": "%lld account was imported from Corvid Web"
                 }
               },
               "other": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "%lld accounts were imported from Pera Web"
+                  "value": "%lld accounts were imported from Corvid Web"
                 }
               }
             }

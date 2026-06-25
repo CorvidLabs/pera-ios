@@ -1,15 +1,8 @@
 {
   "images" : [
-    {
-      "filename" : "icon-pera-solid.pdf",
-      "idiom" : "universal"
-    }
+    { "idiom" : "universal", "filename" : "icon-pera-solid.png", "scale" : "1x" },
+    { "idiom" : "universal", "filename" : "icon-pera-solid@2x.png", "scale" : "2x" },
+    { "idiom" : "universal", "filename" : "icon-pera-solid@3x.png", "scale" : "3x" }
   ],
-  "info" : {
-    "author" : "xcode",
-    "version" : 1
-  },
-  "properties" : {
-    "preserves-vector-representation" : true
-  }
+  "info" : { "author" : "xcode", "version" : 1 }
 }
