@@ -16,36 +16,48 @@ target (and the beta/staging variants). This regenerates the
 Until this is done, `AlgoChatTransport.swift` (the only file that
 `import AlgoChat`) will not compile — that is expected.
 
-## 2. Implement the account/key bridge
+## 2. Account/key bridge — IMPLEMENTED & LocalNet-verified
 
-`AlgoChatTransport.ClientResolver` must build an `AlgoChat` client from a Pera
-HD-wallet account. Pera signs via `XHDWalletAPI.rawSign` and never exposes a raw
-private key, while AlgoChat needs key access for X25519 agreement + tx signing.
-Resolve via either:
-- swift-algochat accepting an external signer that calls `HDWalletSDK.rawSign`, or
-- deriving a dedicated messaging key from the wallet seed (see
-  `PassKeyService.makeSigningSDK`, which already obtains the seed).
+The bridge is `MessagingKeyDerivation` + `AlgoChatClientFactory`: derive a
+dedicated 32-byte messaging key from the HD-wallet **seed** via CryptoKit
+`HKDF<SHA256>`, build an `Account(privateKey:)`, and construct `AlgoChat`. The
+spending key is never exposed. This exact derivation was proven end-to-end on an
+AlgoKit LocalNet (two seed-derived identities exchanged an E2E-encrypted message
+on-chain; addresses are deterministic per seed).
 
-Verify every `// VERIFY:` line in `AlgoChatTransport.swift` against the resolved SDK API.
+The only remaining unverified step is the `seedProvider` call itself, which
+mirrors `PassKeyService.makeSigningSDK`'s existing seed path.
 
-## 3. Launch from the Menu
+## 3. Compose at the root + launch from the Menu
 
-`MessagingFlowCoordinator` is self-contained (pushes directly, no shared `Router`
-edits). Hook it up where the Menu options are handled:
+Build the service where `hdWalletStorage` + network are available (the SDK import
+stays in `pera_wallet_core`), then inject it into the self-contained coordinator:
 
 ```swift
-// In the menu's didSelect handler, for a new `.messaging` option:
-let service = MessagingFlowCoordinator.makeService(featureFlagService: featureFlagService)
+let service = AlgoChatClientFactory.makeMessagingService(
+    featureFlagService: featureFlagService,
+    network: .mainnet,                       // map from the app's current network
+    seedProvider: { address in
+        // mirrors PassKeyService.makeSigningSDK's seed path
+        guard let account = session.authenticatedUser?.accounts.first(where: { $0.address == address }),
+              let walletId = account.hdWalletAddressDetail?.walletId,
+              let wallet = try hdWalletStorage.wallet(id: walletId),
+              let seed = HDWalletUtils.generateSeed(fromEntropy: wallet.entropy)
+        else { throw MessagingError.signingAccountNotFound }
+        return Data(seed.toHexString().utf8)
+    }
+)
+
 guard service.isAvailable, let account = session.authenticatedUser?.accounts.first(where: {
     $0.hdWalletAddressDetail != nil && $0.type == .standard
 }) else { return }
-let coordinator = MessagingFlowCoordinator(
+
+MessagingFlowCoordinator(
     configuration: configuration,
     presentingScreen: self,
     account: account,
     messagingService: service
-)
-coordinator.launch()
+).launch()
 ```
 
 ## Status
@@ -68,6 +80,6 @@ confirmed `conversations` / `conversation(with:)` / `refresh` / `send` /
 `Message.id/.content/.timestamp/.direction` — and surfaced the
 `Conversation.peerAddress → .participant` fix now applied here. What remains
 unverified is only the app build + the account/key bridge below.
+| Account/key bridge (derivation) | ✅ implemented + LocalNet-verified |
 | SPM package wiring | ⬜ Xcode step above |
-| Account/key bridge | ⬜ step 2 above |
-| Menu hook | ⬜ step 3 above |
+| `seedProvider` + Menu hook | ⬜ step 3 above (composition root) |
