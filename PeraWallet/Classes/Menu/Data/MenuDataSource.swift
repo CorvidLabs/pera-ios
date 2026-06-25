@@ -17,8 +17,10 @@
 import UIKit
 
 final class MenuDataSource: NSObject {
+    // Corvid Nevermore — curated/minimal menu: Nevermore (NFTs), Receive, Invite.
+    // (Pera's gift cards + buy-Algo are intentionally trimmed.)
     private(set) lazy var menuOptions: [MenuOption] = [
-        .cards(withCardCreated: false), .nfts(withThumbnails: ["", "", ""]), .buyAlgo, .receive, .inviteFriends
+        .nfts(withThumbnails: ["", "", ""]), .receive, .inviteFriends
     ]
 
     private let sharedDataController: SharedDataController
