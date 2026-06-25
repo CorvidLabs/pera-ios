@@ -31,6 +31,7 @@ final class SettingsListViewModel: ObservableObject {
     enum Row {
         case security
         case contacts
+        case messages
         case notifications
         case walletConnect
         case passkeys
@@ -94,12 +95,13 @@ extension SettingsListViewModel.Section {
             rows: [
                 .security,
                 .contacts,
+                .messages,
                 .notifications,
                 .walletConnect
             ]
         )
     }
-    
+
     static var accountSectionWithPassKeys: Self {
         Self(
             id: 0,
@@ -107,6 +109,7 @@ extension SettingsListViewModel.Section {
             rows: [
                 .security,
                 .contacts,
+                .messages,
                 .notifications,
                 .walletConnect,
                 .passkeys
@@ -148,6 +151,8 @@ extension SettingsListViewModel.Row: Identifiable {
             return "security"
         case .contacts:
             return "contacts"
+        case .messages:
+            return "messages"
         case .notifications:
             return "notifications"
         case .walletConnect:
@@ -180,6 +185,8 @@ extension SettingsListViewModel.Row {
             return .Settings.Icon.security
         case .contacts:
             return .Settings.Icon.contacts
+        case .messages:
+            return .Settings.Icon.walletConnect
         case .notifications:
             return .Settings.Icon.notifications
         case .walletConnect:
@@ -207,6 +214,8 @@ extension SettingsListViewModel.Row {
             return String(localized: "security-settings-title")
         case .contacts:
             return String(localized: "contacts-title")
+        case .messages:
+            return "Messages"
         case .notifications:
             return String(localized: "notifications-title")
         case .walletConnect:

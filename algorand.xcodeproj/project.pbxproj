@@ -7437,6 +7437,7 @@
 		D4FF6CB82DB660610041C7A6 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = D4FF6CB72DB660610041C7A6 /* InfoPlist.xcstrings */; };
 		D4FF6CB92DB660610041C7A6 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = D4FF6CB72DB660610041C7A6 /* InfoPlist.xcstrings */; };
 		D4FF6CBA2DB660610041C7A6 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = D4FF6CB72DB660610041C7A6 /* InfoPlist.xcstrings */; };
+		E60FFB295AA4EAB4AA896F24 /* AlgoChatMessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4D047422FCAEA26D0CA091 /* AlgoChatMessagesViewController.swift */; };
 		F02F19E427DF52D70085521C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CBAD47492745595300C91946 /* Assets.xcassets */; };
 		F02F19E527DF52D80085521C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CBAD47492745595300C91946 /* Assets.xcassets */; };
 		F02F19E627DF52D80085521C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CBAD47492745595300C91946 /* Assets.xcassets */; };
@@ -7449,6 +7450,7 @@
 		F07F00732923C5E800901F07 /* pera-loader-purple-dark.json in Resources */ = {isa = PBXBuildFile; fileRef = F07F006F2923C5E800901F07 /* pera-loader-purple-dark.json */; };
 		F07F00742923C5E800901F07 /* pera-loader-purple-dark.json in Resources */ = {isa = PBXBuildFile; fileRef = F07F006F2923C5E800901F07 /* pera-loader-purple-dark.json */; };
 		F07F00752923C5E800901F07 /* pera-loader-purple-dark.json in Resources */ = {isa = PBXBuildFile; fileRef = F07F006F2923C5E800901F07 /* pera-loader-purple-dark.json */; };
+		FAD481F0BBADBD0108E59886 /* CorvidChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5497DB02D692067A68FE6C /* CorvidChatService.swift */; };
 		FF193FC4410EB1D5139D2DD3 /* AlgoChatKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1D0E598A5F978D44E0D01241 /* AlgoChatKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -8951,6 +8953,8 @@
 		59B1FE5D2E4B5DF400B8F6FB /* auth.request.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = auth.request.json; sourceTree = "<group>"; };
 		59B1FE622E4B68A100B8F6FB /* Config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Config.json; sourceTree = "<group>"; };
 		59B1FE632E4B68A400B8F6FB /* Config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Config.json; sourceTree = "<group>"; };
+		6C5497DB02D692067A68FE6C /* CorvidChatService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CorvidChatService.swift; path = PeraWallet/Classes/Messaging/CorvidChatService.swift; sourceTree = "<group>"; };
+		7E4D047422FCAEA26D0CA091 /* AlgoChatMessagesViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AlgoChatMessagesViewController.swift; path = PeraWallet/Classes/Messaging/AlgoChatMessagesViewController.swift; sourceTree = "<group>"; };
 		8B00DD642C53E97B00D832DC /* IncomingASAsDetailSuccessResultScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingASAsDetailSuccessResultScreenViewModel.swift; sourceTree = "<group>"; };
 		8B00DD682C53EA8900D832DC /* AssetInboxSendSummaryWarningMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetInboxSendSummaryWarningMessage.swift; sourceTree = "<group>"; };
 		8B047C152C02548300851DF5 /* IncomingASAsRequestList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingASAsRequestList.swift; sourceTree = "<group>"; };
@@ -13976,6 +13980,8 @@
 				2B8BE4E5223924DB005D8565 /* Resources */,
 				F060AD0627D7634A00511615 /* Target Support Files */,
 				2B8BE4E42239248A005D8565 /* Support */,
+				7E4D047422FCAEA26D0CA091 /* AlgoChatMessagesViewController.swift */,
+				6C5497DB02D692067A68FE6C /* CorvidChatService.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -31760,6 +31766,8 @@
 				59E60F012E4A71D000CCA99B /* AccountImportParameters.swift in Sources */,
 				D4F717302E547562008E63A3 /* ShimmerSUIView.swift in Sources */,
 				D4DD72ED2F4329FD003FBBCC /* ASADetailPageFragmentScreen.swift in Sources */,
+				E60FFB295AA4EAB4AA896F24 /* AlgoChatMessagesViewController.swift in Sources */,
+				FAD481F0BBADBD0108E59886 /* CorvidChatService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32810,12 +32818,10 @@
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CODE_SIGN_ENTITLEMENTS = algorand.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = Develop;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 87QL82XC78;
+				DEVELOPMENT_TEAM = 8M8SAX62V2;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Libraries",
@@ -32831,7 +32837,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.algorandllc.algorand;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Profile appstore com.algorandllc.algorand";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -32844,11 +32849,9 @@
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CODE_SIGN_ENTITLEMENTS = algorand.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = Develop;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 87QL82XC78;
+				DEVELOPMENT_TEAM = 8M8SAX62V2;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Libraries",
@@ -32864,7 +32867,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.algorandllc.algorand;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Profile appstore com.algorandllc.algorand";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -33356,11 +33358,9 @@
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CODE_SIGN_ENTITLEMENTS = algorand.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = Develop;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 87QL82XC78;
+				DEVELOPMENT_TEAM = 8M8SAX62V2;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Libraries",
@@ -33376,7 +33376,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.algorandllc.algorand;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Profile appstore com.algorandllc.algorand";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

@@ -23,6 +23,7 @@ struct SettingsListView: View {
         case back
         case security
         case contacts
+        case messages
         case notifications
         case walletConnect
         case currency
@@ -132,6 +133,8 @@ struct SettingsListView: View {
             onLegacyNavigationOptionSelected?(.security)
         case .contacts:
             onLegacyNavigationOptionSelected?(.contacts)
+        case .messages:
+            onLegacyNavigationOptionSelected?(.messages)
         case .notifications:
             onLegacyNavigationOptionSelected?(.notifications)
         case .walletConnect:

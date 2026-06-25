@@ -80,6 +80,29 @@ final class TabBarController: TabBarContainer {
         UIApplication.shared.appConfiguration?.session.isValid = true
     }
 
+    #if DEBUG
+    private var didPresentDebugMessages = false
+    /// Dev/demo convenience: launch with env `CORVID_OPEN_MESSAGES=1` to jump
+    /// straight into the AlgoChat Messages screen (same VC the Settings ›
+    /// Messages row pushes). Harmless otherwise. Lets UI automation reach the
+    /// screen without driving the custom bottom tab bar.
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        guard
+            ProcessInfo.processInfo.environment["CORVID_OPEN_MESSAGES"] == "1",
+            !didPresentDebugMessages,
+            let appConfiguration = UIApplication.shared.appConfiguration
+        else { return }
+        let accounts = appConfiguration.session.authenticatedUser?.accounts ?? []
+        guard let account = accounts.first(where: { $0.hdWalletAddressDetail != nil }) ?? accounts.first else { return }
+        didPresentDebugMessages = true
+        let messages = AlgoChatMessagesViewController(account: account, configuration: appConfiguration.all())
+        let nav = UINavigationController(rootViewController: messages)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true)
+    }
+    #endif
+
     override func setListeners() {
         super.setListeners()
 
