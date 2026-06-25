@@ -1,0 +1,38 @@
+name: Spec Sync
+
+# Validates module specs (specs/**/*.spec.md) against PeraWalletCore source.
+# Catches drift in both directions: undocumented public exports and phantom
+# spec entries. Scoped to the spec'd core so the rest of the app is unaffected.
+
+on:
+  pull_request:
+    paths:
+      - 'PeraWalletCore/**'
+      - 'specs/**'
+      - '.specsync/**'
+      - '.github/workflows/spec-sync.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'PeraWalletCore/**'
+      - 'specs/**'
+      - '.specsync/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  spec-check:
+    name: Validate specs against code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: SpecSync check
+        uses: CorvidLabs/spec-sync@v4
+        with:
+          version: latest
+          strict: 'true'
+          require-coverage: '100'
+          comment: 'true'
