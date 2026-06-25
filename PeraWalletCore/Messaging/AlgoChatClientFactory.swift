@@ -52,8 +52,17 @@ public final class AlgoChatClientFactory {
     }
 
     /// A `ClientResolver` suitable for `AlgoChatTransport`.
+    /// Captures the immutable config locally so the `@Sendable` closure does not
+    /// capture `self`.
     public func clientResolver() -> AlgoChatTransport.ClientResolver {
-        { address in try await self.makeClient(forAddress: address) }
+        let network = self.network
+        let seedProvider = self.seedProvider
+        return { address in
+            let seed = try await seedProvider(address)
+            let key = MessagingKeyDerivation.messagingKey(fromSeed: seed)
+            let account = try Account(privateKey: key)
+            return try await AlgoChat(network: network, account: account)
+        }
     }
 
     /// Composes the full, ready-to-use messaging service.

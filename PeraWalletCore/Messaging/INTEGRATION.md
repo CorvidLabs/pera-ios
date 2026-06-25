@@ -69,6 +69,18 @@ MessagingFlowCoordinator(
 | `AlgoChatTransport` SDK adapter | ✅ API verified on LocalNet (see below); only the key bridge is open |
 | UI (list + chat + coordinator) | ✅ written (plain UIKit), NOT build-verified |
 
+## Compile verification
+
+All eight core sources in this directory (`MessagingError`, `ChatMessage`,
+`ConversationSummary`, `MessagingTransport`, `MessagingService`,
+`AlgoChatTransport`, `AlgoChatClientFactory`, `MessagingKeyDerivation`) were
+compiled against the **real swift-algochat package** in a SwiftPM harness with
+minimal stand-ins for the Pera types — i.e. the same compilation the Xcode build
+performs for these files. This caught and fixed two real issues (`AlgoChatTransport`
+needed `import Algorand` for `Address`; `AlgoChatClientFactory.clientResolver()`
+captured non-`Sendable` `self`). The UI files (UIKit/MacaroonUIKit) and the SPM
+project wiring still need the Xcode build.
+
 ## LocalNet verification
 
 The exact SDK API this adapter uses was proven end-to-end against a running
