@@ -23,6 +23,7 @@ public enum FeatureFlag: String, CaseIterable {
     case ledgerDeflexFilterEnabled = "enable_ledger_deflex_filter"
     case jointAccountEnabled = "enable_joint_account"
     case enableImmersve = "enable_immersve"
+    case messagingEnabled = "enable_messaging"
 
     var defaultValue: RemoteConfigValue {
         switch self {
@@ -32,6 +33,7 @@ public enum FeatureFlag: String, CaseIterable {
         case .ledgerDeflexFilterEnabled: .bool(false)
         case .jointAccountEnabled: .bool(true)
         case .enableImmersve: .bool(false)
+        case .messagingEnabled: .bool(false)
         }
     }
     
@@ -44,6 +46,7 @@ public enum FeatureFlag: String, CaseIterable {
         case .liquidConnectEnabled: "Enable Liquid Connect"
         case .ledgerDeflexFilterEnabled: "Enable Ledger Deflex Filter"
         case .jointAccountEnabled: "Enable Shared Account"
+        case .messagingEnabled: "Enable Messaging"
         }
     }
     
