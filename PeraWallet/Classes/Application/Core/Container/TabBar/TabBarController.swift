@@ -88,11 +88,23 @@ final class TabBarController: TabBarContainer {
     /// screen without driving the custom bottom tab bar.
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        guard
-            ProcessInfo.processInfo.environment["CORVID_OPEN_MESSAGES"] == "1",
-            !didPresentDebugMessages,
-            let appConfiguration = UIApplication.shared.appConfiguration
-        else { return }
+        // Optionally select a tab by id (e.g. CORVID_OPEN_TAB=menu) so automation
+        // can screenshot a tab the custom bottom bar won't accept taps for.
+        if let tab = ProcessInfo.processInfo.environment["CORVID_OPEN_TAB"],
+           let item = TabBarItemID(rawValue: tab) {
+            selectedTab = item
+        }
+        guard !didPresentDebugMessages, let appConfiguration = UIApplication.shared.appConfiguration else { return }
+        let env = ProcessInfo.processInfo.environment
+        if env["CORVID_OPEN_SETTINGS"] == "1" {
+            didPresentDebugMessages = true
+            let settings = SettingsListConstructor.buildScene(legacyAppConfiguration: appConfiguration)
+            let nav = UINavigationController(rootViewController: settings)
+            nav.modalPresentationStyle = .fullScreen
+            present(nav, animated: true)
+            return
+        }
+        guard env["CORVID_OPEN_MESSAGES"] == "1" else { return }
         let accounts = appConfiguration.session.authenticatedUser?.accounts ?? []
         guard let account = accounts.first(where: { $0.hdWalletAddressDetail != nil }) ?? accounts.first else { return }
         didPresentDebugMessages = true
