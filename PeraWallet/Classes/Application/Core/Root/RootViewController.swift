@@ -131,23 +131,10 @@ extension RootViewController {
         let menuVC = MenuViewController(configuration: appConfiguration.all())
         let menuTab = MenuTabBarItem(NavigationContainer(rootViewController: menuVC))
 
-        // Corvid Nevermore — give the flagship NFT collection its own tab.
-        let collectiblesVC = CollectiblesViewController(
-            query: CollectibleListQuery(
-                filteringBy: .init(),
-                sortingBy: appConfiguration.sharedDataController.selectedCollectibleSortingAlgorithm
-            ),
-            dataController: CollectibleListLocalDataController(
-                galleryAccount: .all,
-                sharedDataController: appConfiguration.sharedDataController
-            ),
-            copyToClipboardController: ALGCopyToClipboardController(
-                toastPresentationController: appConfiguration.toastPresentationController
-            ),
-            configuration: appConfiguration.all()
-        )
+        // Corvid Nevermore — the flagship token-gated membership pass gets its own tab.
+        let nevermoreVC = NevermoreViewController(configuration: appConfiguration.all())
         let collectiblesTab = CollectiblesTabBarItem(
-            NavigationContainer(rootViewController: collectiblesVC)
+            NavigationContainer(rootViewController: nevermoreVC)
         )
 
         // Curated/minimal navigation: Home · Nevermore · Menu.
