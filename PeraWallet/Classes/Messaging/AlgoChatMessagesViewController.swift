@@ -43,6 +43,7 @@ final class AlgoChatMessagesViewController: BaseViewController {
     private lazy var toLabel = UILabel()
     private lazy var peerContainer = UIView()
     private lazy var peerField = UITextField()
+    private lazy var qrButton = UIButton(type: .system)
     private lazy var pasteButton = UIButton(type: .system)
 
     private lazy var statusLabel = UILabel()
@@ -128,6 +129,10 @@ final class AlgoChatMessagesViewController: BaseViewController {
             attributes: [.foregroundColor: inkFaint, .font: UIFont.systemFont(ofSize: 14)]
         )
 
+        let qrConfig = UIImage.SymbolConfiguration(pointSize: 19, weight: .regular)
+        qrButton.setImage(UIImage(systemName: "qrcode.viewfinder", withConfiguration: qrConfig), for: .normal)
+        qrButton.tintColor = accent
+
         pasteButton.setTitle("Paste", for: .normal)
         pasteButton.titleLabel?.font = .systemFont(ofSize: 14, weight: .semibold)
         pasteButton.setTitleColor(accent, for: .normal)
@@ -192,6 +197,7 @@ final class AlgoChatMessagesViewController: BaseViewController {
         composeField.addTarget(self, action: #selector(sendTapped), for: .editingDidEndOnExit)
         peerField.addTarget(self, action: #selector(refreshTapped), for: .editingDidEndOnExit)
         pasteButton.addTarget(self, action: #selector(pasteTapped), for: .touchUpInside)
+        qrButton.addTarget(self, action: #selector(scanQRTapped), for: .touchUpInside)
         addressCard.addTarget(self, action: #selector(copyAddressTapped), for: .touchUpInside)
         let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing(_:)))
         tap.cancelsTouchesInView = false
@@ -208,6 +214,7 @@ final class AlgoChatMessagesViewController: BaseViewController {
         view.addSubview(toLabel)
         view.addSubview(peerContainer)
         peerContainer.addSubview(peerField)
+        peerContainer.addSubview(qrButton)
         peerContainer.addSubview(pasteButton)
         view.addSubview(statusLabel)
         view.addSubview(tableView)
@@ -248,12 +255,17 @@ final class AlgoChatMessagesViewController: BaseViewController {
         pasteButton.snp.makeConstraints {
             $0.trailing.equalToSuperview().inset(14)
             $0.centerY.equalToSuperview()
-            $0.width.equalTo(48)
+            $0.width.equalTo(46)
+        }
+        qrButton.snp.makeConstraints {
+            $0.trailing.equalTo(pasteButton.snp.leading).offset(-2)
+            $0.centerY.equalToSuperview()
+            $0.width.equalTo(30)
         }
         peerField.snp.makeConstraints {
             $0.leading.equalToSuperview().inset(16)
             $0.centerY.equalToSuperview()
-            $0.trailing.equalTo(pasteButton.snp.leading).offset(-8)
+            $0.trailing.equalTo(qrButton.snp.leading).offset(-6)
         }
         statusLabel.snp.makeConstraints {
             $0.top.equalTo(peerContainer.snp.bottom).offset(10)
@@ -371,6 +383,12 @@ final class AlgoChatMessagesViewController: BaseViewController {
         refreshTapped()
     }
 
+    @objc private func scanQRTapped() {
+        view.endEditing(true)
+        guard let scanner = open(.qrScanner(canReadWCSession: false), by: .push) as? QRScannerViewController else { return }
+        scanner.delegate = self
+    }
+
     @objc private func refreshTapped() {
         guard let service, let peer = peerField.text, !peer.isEmpty else { return }
         view.endEditing(true)
@@ -450,13 +468,47 @@ extension AlgoChatMessagesViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - QRScannerViewControllerDelegate
+
+extension AlgoChatMessagesViewController: QRScannerViewControllerDelegate {
+    func qrScannerViewController(
+        _ controller: QRScannerViewController,
+        didRead qrText: QRText,
+        completionHandler: EmptyHandler?
+    ) {
+        guard qrText.mode == .address, let scanned = qrText.address, !scanned.isEmpty else {
+            statusLabel.text = "That QR code isn't an Algorand address."
+            completionHandler?()
+            return
+        }
+        peerField.text = scanned
+        refreshTapped()
+    }
+
+    func qrScannerViewController(
+        _ controller: QRScannerViewController,
+        didFail error: QRScannerError,
+        completionHandler: EmptyHandler?
+    ) {
+        statusLabel.text = "Couldn't read that QR code."
+        completionHandler?()
+    }
+}
+
 // MARK: - MessageCell
 
 private final class MessageCell: UITableViewCell {
     static let reuseID = "AlgoChatMessageCell"
 
+    private static let timeFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "h:mm a"
+        return f
+    }()
+
     private let bubble = UIView()
     private let label = UILabel()
+    private let timeLabel = UILabel()
     private var leadingConstraint: Constraint?
     private var trailingConstraint: Constraint?
 
@@ -468,16 +520,26 @@ private final class MessageCell: UITableViewCell {
         bubble.layer.cornerCurve = .continuous
         label.numberOfLines = 0
         label.font = .systemFont(ofSize: 15.5)
+        timeLabel.font = .systemFont(ofSize: 11, weight: .medium)
+        timeLabel.textAlignment = .right
         contentView.addSubview(bubble)
         bubble.addSubview(label)
+        bubble.addSubview(timeLabel)
         bubble.snp.makeConstraints {
             $0.top.bottom.equalToSuperview().inset(4)
-            $0.width.lessThanOrEqualTo(266)
+            $0.width.lessThanOrEqualTo(270)
             self.leadingConstraint = $0.leading.equalToSuperview().inset(16).constraint
             self.trailingConstraint = $0.trailing.equalToSuperview().inset(16).constraint
         }
         label.snp.makeConstraints {
-            $0.edges.equalToSuperview().inset(UIEdgeInsets(top: 10, left: 14, bottom: 10, right: 14))
+            $0.top.equalToSuperview().inset(9)
+            $0.leading.trailing.equalToSuperview().inset(14)
+        }
+        timeLabel.snp.makeConstraints {
+            $0.top.equalTo(label.snp.bottom).offset(3)
+            $0.trailing.equalToSuperview().inset(14)
+            $0.leading.greaterThanOrEqualToSuperview().inset(14)
+            $0.bottom.equalToSuperview().inset(8)
         }
     }
 
@@ -491,14 +553,17 @@ private final class MessageCell: UITableViewCell {
         incomingText: UIColor
     ) {
         label.text = message.body
+        timeLabel.text = Self.timeFormatter.string(from: message.date)
         if message.isOutgoing {
             bubble.backgroundColor = outgoing
             label.textColor = onOutgoing
+            timeLabel.textColor = onOutgoing.withAlphaComponent(0.75)
             leadingConstraint?.deactivate()
             trailingConstraint?.activate()
         } else {
             bubble.backgroundColor = incomingBg
             label.textColor = incomingText
+            timeLabel.textColor = incomingText.withAlphaComponent(0.55)
             trailingConstraint?.deactivate()
             leadingConstraint?.activate()
         }

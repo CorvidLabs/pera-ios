@@ -1,9 +1,1032 @@
 {
   "ABIRoot": {
     "kind": "Root",
-    "name": "NO_MODULE",
-    "printedName": "NO_MODULE",
+    "name": "AlgoChatKit",
+    "printedName": "AlgoChatKit",
+    "children": [
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "AlgoChatKit"
+      },
+      {
+        "kind": "Import",
+        "name": "CryptoKit",
+        "printedName": "CryptoKit",
+        "declKind": "Import",
+        "moduleName": "AlgoChatKit"
+      },
+      {
+        "kind": "Import",
+        "name": "AlgoChat",
+        "printedName": "AlgoChat",
+        "declKind": "Import",
+        "moduleName": "AlgoChatKit",
+        "declAttributes": [
+          "ImplementationOnly"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Algorand",
+        "printedName": "Algorand",
+        "declKind": "Import",
+        "moduleName": "AlgoChatKit",
+        "declAttributes": [
+          "ImplementationOnly"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "AlgoKit",
+        "printedName": "AlgoKit",
+        "declKind": "Import",
+        "moduleName": "AlgoChatKit",
+        "declAttributes": [
+          "ImplementationOnly"
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "ACKClient",
+        "printedName": "ACKClient",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "address",
+            "printedName": "address",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:11AlgoChatKit9ACKClientC7addressSSvp",
+            "mangledName": "$s11AlgoChatKit9ACKClientC7addressSSvp",
+            "moduleName": "AlgoChatKit",
+            "declAttributes": [
+              "Final",
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:11AlgoChatKit9ACKClientC7addressSSvg",
+                "mangledName": "$s11AlgoChatKit9ACKClientC7addressSSvg",
+                "moduleName": "AlgoChatKit",
+                "implicit": true,
+                "declAttributes": [
+                  "Final"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(seed:network:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "ACKClient",
+                "printedName": "AlgoChatKit.ACKClient",
+                "usr": "s:11AlgoChatKit9ACKClientC"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Data",
+                "printedName": "Foundation.Data",
+                "usr": "s:10Foundation4DataV"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "ACKNetwork",
+                "printedName": "AlgoChatKit.ACKNetwork",
+                "usr": "s:11AlgoChatKit10ACKNetworkO"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:11AlgoChatKit9ACKClientC4seed7networkAC10Foundation4DataV_AA10ACKNetworkOtYaKcfc",
+            "mangledName": "$s11AlgoChatKit9ACKClientC4seed7networkAC10Foundation4DataV_AA10ACKNetworkOtYaKcfc",
+            "moduleName": "AlgoChatKit",
+            "declAttributes": [
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "throwing": true,
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Function",
+            "name": "publishKey",
+            "printedName": "publishKey()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11AlgoChatKit9ACKClientC10publishKeyyyYaKF",
+            "mangledName": "$s11AlgoChatKit9ACKClientC10publishKeyyyYaKF",
+            "moduleName": "AlgoChatKit",
+            "declAttributes": [
+              "Final",
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "messages",
+            "printedName": "messages(withPeer:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[AlgoChatKit.ACKMessage]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ACKMessage",
+                    "printedName": "AlgoChatKit.ACKMessage",
+                    "usr": "s:11AlgoChatKit10ACKMessageV"
+                  }
+                ],
+                "usr": "s:Sa"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11AlgoChatKit9ACKClientC8messages8withPeerSayAA10ACKMessageVGSS_tYaKF",
+            "mangledName": "$s11AlgoChatKit9ACKClientC8messages8withPeerSayAA10ACKMessageVGSS_tYaKF",
+            "moduleName": "AlgoChatKit",
+            "declAttributes": [
+              "Final",
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "send",
+            "printedName": "send(_:toPeer:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11AlgoChatKit9ACKClientC4send_6toPeerySS_SStYaKF",
+            "mangledName": "$s11AlgoChatKit9ACKClientC4send_6toPeerySS_SStYaKF",
+            "moduleName": "AlgoChatKit",
+            "declAttributes": [
+              "Final",
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "s:11AlgoChatKit9ACKClientC",
+        "mangledName": "$s11AlgoChatKit9ACKClientC",
+        "moduleName": "AlgoChatKit",
+        "declAttributes": [
+          "Final",
+          "AccessControl",
+          "RawDocComment"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          }
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "AlgoChatKit"
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "ACKMessage",
+        "printedName": "ACKMessage",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "id",
+            "printedName": "id",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "UUID",
+                "printedName": "Foundation.UUID",
+                "usr": "s:10Foundation4UUIDV"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:11AlgoChatKit10ACKMessageV2id10Foundation4UUIDVvp",
+            "mangledName": "$s11AlgoChatKit10ACKMessageV2id10Foundation4UUIDVvp",
+            "moduleName": "AlgoChatKit",
+            "declAttributes": [
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "UUID",
+                    "printedName": "Foundation.UUID",
+                    "usr": "s:10Foundation4UUIDV"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:11AlgoChatKit10ACKMessageV2id10Foundation4UUIDVvg",
+                "mangledName": "$s11AlgoChatKit10ACKMessageV2id10Foundation4UUIDVvg",
+                "moduleName": "AlgoChatKit",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "body",
+            "printedName": "body",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:11AlgoChatKit10ACKMessageV4bodySSvp",
+            "mangledName": "$s11AlgoChatKit10ACKMessageV4bodySSvp",
+            "moduleName": "AlgoChatKit",
+            "declAttributes": [
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:11AlgoChatKit10ACKMessageV4bodySSvg",
+                "mangledName": "$s11AlgoChatKit10ACKMessageV4bodySSvg",
+                "moduleName": "AlgoChatKit",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "isOutgoing",
+            "printedName": "isOutgoing",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:11AlgoChatKit10ACKMessageV10isOutgoingSbvp",
+            "mangledName": "$s11AlgoChatKit10ACKMessageV10isOutgoingSbvp",
+            "moduleName": "AlgoChatKit",
+            "declAttributes": [
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Bool",
+                    "printedName": "Swift.Bool",
+                    "usr": "s:Sb"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:11AlgoChatKit10ACKMessageV10isOutgoingSbvg",
+                "mangledName": "$s11AlgoChatKit10ACKMessageV10isOutgoingSbvg",
+                "moduleName": "AlgoChatKit",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "timestamp",
+            "printedName": "timestamp",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Date",
+                "printedName": "Foundation.Date",
+                "usr": "s:10Foundation4DateV"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:11AlgoChatKit10ACKMessageV9timestamp10Foundation4DateVvp",
+            "mangledName": "$s11AlgoChatKit10ACKMessageV9timestamp10Foundation4DateVvp",
+            "moduleName": "AlgoChatKit",
+            "declAttributes": [
+              "HasStorage",
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Date",
+                    "printedName": "Foundation.Date",
+                    "usr": "s:10Foundation4DateV"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:11AlgoChatKit10ACKMessageV9timestamp10Foundation4DateVvg",
+                "mangledName": "$s11AlgoChatKit10ACKMessageV9timestamp10Foundation4DateVvg",
+                "moduleName": "AlgoChatKit",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(body:isOutgoing:timestamp:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "ACKMessage",
+                "printedName": "AlgoChatKit.ACKMessage",
+                "usr": "s:11AlgoChatKit10ACKMessageV"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Date",
+                "printedName": "Foundation.Date",
+                "hasDefaultArg": true,
+                "usr": "s:10Foundation4DateV"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:11AlgoChatKit10ACKMessageV4body10isOutgoing9timestampACSS_Sb10Foundation4DateVtcfc",
+            "mangledName": "$s11AlgoChatKit10ACKMessageV4body10isOutgoing9timestampACSS_Sb10Foundation4DateVtcfc",
+            "moduleName": "AlgoChatKit",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "init_kind": "Designated"
+          }
+        ],
+        "declKind": "Struct",
+        "usr": "s:11AlgoChatKit10ACKMessageV",
+        "mangledName": "$s11AlgoChatKit10ACKMessageV",
+        "moduleName": "AlgoChatKit",
+        "declAttributes": [
+          "AccessControl",
+          "RawDocComment"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Identifiable",
+            "printedName": "Identifiable",
+            "children": [
+              {
+                "kind": "TypeWitness",
+                "name": "ID",
+                "printedName": "ID",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "UUID",
+                    "printedName": "Foundation.UUID",
+                    "usr": "s:10Foundation4UUIDV"
+                  }
+                ]
+              }
+            ],
+            "usr": "s:s12IdentifiableP",
+            "mangledName": "$ss12IdentifiableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "SendableMetatype",
+            "printedName": "SendableMetatype",
+            "usr": "s:s16SendableMetatypeP",
+            "mangledName": "$ss16SendableMetatypeP"
+          }
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "AlgoChatKit"
+      },
+      {
+        "kind": "Import",
+        "name": "Algorand",
+        "printedName": "Algorand",
+        "declKind": "Import",
+        "moduleName": "AlgoChatKit",
+        "declAttributes": [
+          "ImplementationOnly"
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "ACKNetwork",
+        "printedName": "ACKNetwork",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "localnet",
+            "printedName": "localnet",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(AlgoChatKit.ACKNetwork.Type) -> AlgoChatKit.ACKNetwork",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ACKNetwork",
+                    "printedName": "AlgoChatKit.ACKNetwork",
+                    "usr": "s:11AlgoChatKit10ACKNetworkO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "AlgoChatKit.ACKNetwork.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ACKNetwork",
+                        "printedName": "AlgoChatKit.ACKNetwork",
+                        "usr": "s:11AlgoChatKit10ACKNetworkO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:11AlgoChatKit10ACKNetworkO8localnetyA2CmF",
+            "mangledName": "$s11AlgoChatKit10ACKNetworkO8localnetyA2CmF",
+            "moduleName": "AlgoChatKit"
+          },
+          {
+            "kind": "Var",
+            "name": "testnet",
+            "printedName": "testnet",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(AlgoChatKit.ACKNetwork.Type) -> AlgoChatKit.ACKNetwork",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ACKNetwork",
+                    "printedName": "AlgoChatKit.ACKNetwork",
+                    "usr": "s:11AlgoChatKit10ACKNetworkO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "AlgoChatKit.ACKNetwork.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ACKNetwork",
+                        "printedName": "AlgoChatKit.ACKNetwork",
+                        "usr": "s:11AlgoChatKit10ACKNetworkO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:11AlgoChatKit10ACKNetworkO7testnetyA2CmF",
+            "mangledName": "$s11AlgoChatKit10ACKNetworkO7testnetyA2CmF",
+            "moduleName": "AlgoChatKit"
+          },
+          {
+            "kind": "Var",
+            "name": "mainnet",
+            "printedName": "mainnet",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(AlgoChatKit.ACKNetwork.Type) -> AlgoChatKit.ACKNetwork",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ACKNetwork",
+                    "printedName": "AlgoChatKit.ACKNetwork",
+                    "usr": "s:11AlgoChatKit10ACKNetworkO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "AlgoChatKit.ACKNetwork.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ACKNetwork",
+                        "printedName": "AlgoChatKit.ACKNetwork",
+                        "usr": "s:11AlgoChatKit10ACKNetworkO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:11AlgoChatKit10ACKNetworkO7mainnetyA2CmF",
+            "mangledName": "$s11AlgoChatKit10ACKNetworkO7mainnetyA2CmF",
+            "moduleName": "AlgoChatKit"
+          },
+          {
+            "kind": "Function",
+            "name": "==",
+            "printedName": "==(_:_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "ACKNetwork",
+                "printedName": "AlgoChatKit.ACKNetwork",
+                "usr": "s:11AlgoChatKit10ACKNetworkO"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "ACKNetwork",
+                "printedName": "AlgoChatKit.ACKNetwork",
+                "usr": "s:11AlgoChatKit10ACKNetworkO"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11AlgoChatKit10ACKNetworkO2eeoiySbAC_ACtFZ",
+            "mangledName": "$s11AlgoChatKit10ACKNetworkO2eeoiySbAC_ACtFZ",
+            "moduleName": "AlgoChatKit",
+            "static": true,
+            "implicit": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Var",
+            "name": "hashValue",
+            "printedName": "hashValue",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:11AlgoChatKit10ACKNetworkO9hashValueSivp",
+            "mangledName": "$s11AlgoChatKit10ACKNetworkO9hashValueSivp",
+            "moduleName": "AlgoChatKit",
+            "implicit": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int",
+                    "printedName": "Swift.Int",
+                    "usr": "s:Si"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:11AlgoChatKit10ACKNetworkO9hashValueSivg",
+                "mangledName": "$s11AlgoChatKit10ACKNetworkO9hashValueSivg",
+                "moduleName": "AlgoChatKit",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Function",
+            "name": "hash",
+            "printedName": "hash(into:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Hasher",
+                "printedName": "Swift.Hasher",
+                "paramValueOwnership": "InOut",
+                "usr": "s:s6HasherV"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11AlgoChatKit10ACKNetworkO4hash4intoys6HasherVz_tF",
+            "mangledName": "$s11AlgoChatKit10ACKNetworkO4hash4intoys6HasherVz_tF",
+            "moduleName": "AlgoChatKit",
+            "implicit": true,
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Enum",
+        "usr": "s:11AlgoChatKit10ACKNetworkO",
+        "mangledName": "$s11AlgoChatKit10ACKNetworkO",
+        "moduleName": "AlgoChatKit",
+        "declAttributes": [
+          "AccessControl",
+          "RawDocComment"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
+          {
+            "kind": "Conformance",
+            "name": "SendableMetatype",
+            "printedName": "SendableMetatype",
+            "usr": "s:s16SendableMetatypeP",
+            "mangledName": "$ss16SendableMetatypeP"
+          }
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "AlgoChatKit"
+      },
+      {
+        "kind": "Import",
+        "name": "AlgoChat",
+        "printedName": "AlgoChat",
+        "declKind": "Import",
+        "moduleName": "AlgoChatKit",
+        "declAttributes": [
+          "ImplementationOnly"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Algorand",
+        "printedName": "Algorand",
+        "declKind": "Import",
+        "moduleName": "AlgoChatKit",
+        "declAttributes": [
+          "ImplementationOnly"
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "AlgoChatKit",
+        "printedName": "AlgoChatKit",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "version",
+            "printedName": "version",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:11AlgoChatKitAAO7versionSSvpZ",
+            "mangledName": "$s11AlgoChatKitAAO7versionSSvpZ",
+            "moduleName": "AlgoChatKit",
+            "static": true,
+            "declAttributes": [
+              "HasInitialValue",
+              "HasStorage",
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:11AlgoChatKitAAO7versionSSvgZ",
+                "mangledName": "$s11AlgoChatKitAAO7versionSSvgZ",
+                "moduleName": "AlgoChatKit",
+                "static": true,
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "maxMessageBytes",
+            "printedName": "maxMessageBytes",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:11AlgoChatKitAAO15maxMessageBytesSivpZ",
+            "mangledName": "$s11AlgoChatKitAAO15maxMessageBytesSivpZ",
+            "moduleName": "AlgoChatKit",
+            "static": true,
+            "declAttributes": [
+              "HasInitialValue",
+              "HasStorage",
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int",
+                    "printedName": "Swift.Int",
+                    "usr": "s:Si"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:11AlgoChatKitAAO15maxMessageBytesSivgZ",
+                "mangledName": "$s11AlgoChatKitAAO15maxMessageBytesSivgZ",
+                "moduleName": "AlgoChatKit",
+                "static": true,
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Function",
+            "name": "messagingAddress",
+            "printedName": "messagingAddress(fromSeed:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Data",
+                "printedName": "Foundation.Data",
+                "usr": "s:10Foundation4DataV"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11AlgoChatKitAAO16messagingAddress8fromSeedSS10Foundation4DataV_tKFZ",
+            "mangledName": "$s11AlgoChatKitAAO16messagingAddress8fromSeedSS10Foundation4DataV_tKFZ",
+            "moduleName": "AlgoChatKit",
+            "static": true,
+            "declAttributes": [
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Enum",
+        "usr": "s:11AlgoChatKitAAO",
+        "mangledName": "$s11AlgoChatKitAAO",
+        "moduleName": "AlgoChatKit",
+        "declAttributes": [
+          "AccessControl",
+          "RawDocComment"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          }
+        ]
+      }
+    ],
     "json_format_version": 8
   },
-  "ConstValues": []
+  "ConstValues": [
+    {
+      "filePath": "\/tmp\/claude-501\/-Users-leif-Development--CorvidLabs-pera-ios\/fffd3531-4e24-498a-b1b7-e32c8afa6783\/scratchpad\/AlgoChatKitBuild\/Sources\/AlgoChatKit\/AlgoChatKit.swift",
+      "kind": "StringLiteral",
+      "offset": 238,
+      "length": 7,
+      "value": "\"1.0.0\""
+    }
+  ]
 }

@@ -1,0 +1,36 @@
+name: AlgoChatKit
+options:
+  bundleIdPrefix: com.corvidlabs
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+packages:
+  swift-algochat:
+    url: https://github.com/CorvidLabs/swift-algochat
+    revision: c5126b8309b32064c1a1bd826734f6e60e8aaf75
+  swift-algokit:
+    url: https://github.com/CorvidLabs/swift-algokit
+    revision: 07abcab75a912b435cec2158a033c975039f7676
+  swift-algorand:
+    url: https://github.com/CorvidLabs/swift-algorand
+    revision: ca29c9ae8d355d556d2bd54ebee098ca6b8397f7
+targets:
+  AlgoChatKit:
+    type: framework
+    platform: iOS
+    sources: [Sources/AlgoChatKit]
+    dependencies:
+      - package: swift-algochat
+        product: AlgoChat
+      - package: swift-algokit
+        product: AlgoKit
+      - package: swift-algorand
+        product: Algorand
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.corvidlabs.algochatkit
+        BUILD_LIBRARY_FOR_DISTRIBUTION: YES
+        DEFINES_MODULE: YES
+        SWIFT_VERSION: "6.0"
+        TARGETED_DEVICE_FAMILY: "1,2"
+        CODE_SIGNING_ALLOWED: NO
