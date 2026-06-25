@@ -662,7 +662,13 @@ extension TransactionController {
             guard
                 let hdWalletAddressDetail = account.hdWalletAddressDetail,
                 let seed = try hdWalletStorage.wallet(id: hdWalletAddressDetail.walletId) else {
-                assertionFailure("Wallet not found")
+                // The account is flagged as HD but its seed is missing from storage
+                // (e.g. an orphaned account). Surface an error instead of hard-crashing
+                // the app mid-signing via assertionFailure.
+                delegate?.transactionController(
+                    self,
+                    didFailedComposing: .inapp(.other)
+                )
                 return
             }
             
