@@ -18,7 +18,9 @@ import Foundation
 import pera_wallet_core
 
 /// Nevermore is the CorvidLabs lifetime-membership pass — a single, non-mintable
-/// NFT that unlocks every CorvidLabs tool. This models who holds it and what it unlocks.
+/// NFT we issue. Every CorvidLabs app stays free for everyone; the pass unlocks
+/// the Pro tier and gets holders into each product's beta first. This models who
+/// holds the pass and what it surfaces.
 enum NevermoreMembership {
     /// The Nevermore pass ASA.
     ///
@@ -28,44 +30,54 @@ enum NevermoreMembership {
     /// we can't sign from here), so this can stay `0` until the real ID is wired.
     static let assetID: AssetID = 0
 
-    /// A CorvidLabs tool unlocked by the pass.
-    struct Perk: Hashable {
-        let symbol: String
-        let name: String
-        let detail: String
+    /// Where a product sits on the CorvidLabs release ladder.
+    enum Stage: Hashable {
+        case live
+        case beta
+        case soon
+
+        var label: String {
+            switch self {
+            case .live: return "LIVE"
+            case .beta: return "BETA"
+            case .soon: return "SOON"
+            }
+        }
     }
 
-    /// Everything the pass unlocks.
-    static let perks: [Perk] = [
-        Perk(
-            symbol: "lock.open.fill",
-            name: "AlgoChat",
-            detail: "On-chain, end-to-end encrypted messaging"
-        ),
-        Perk(
-            symbol: "arrow.triangle.2.circlepath",
-            name: "spec-sync",
-            detail: "Spec ↔ code validation that gates every change"
-        ),
-        Perk(
-            symbol: "bird.fill",
-            name: "fledge",
-            detail: "Dev-lifecycle CLI — release, changelog, lanes"
-        ),
-        Perk(
-            symbol: "chart.bar.fill",
-            name: "augur",
-            detail: "Graded trust — risk-scores every diff"
-        ),
-        Perk(
+    /// A CorvidLabs product surfaced on the pass screen.
+    struct Product: Hashable {
+        let symbol: String
+        let name: String
+        let tagline: String
+        let stage: Stage
+    }
+
+    /// The flagship, featured big. Quill — github.com/CorvidLabs/quill.
+    static let hero = Product(
+        symbol: "waveform",
+        name: "Quill",
+        tagline: "Local-first voice dictation. Whisper STT, on-device LLM polish, and system-wide text injection.",
+        stage: .beta
+    )
+
+    /// What the pass gives a Quill holder — base app is free for everyone.
+    static let heroMemberPerk = "Quill Pro — unlocked for life"
+    static let heroPublicPerk = "Free to use · Pro unlocks with the pass"
+
+    /// "More unlocking soon" — honest about what's live vs. coming.
+    static let more: [Product] = [
+        Product(
             symbol: "checkmark.seal.fill",
-            name: "attest",
-            detail: "Signed provenance ledger in git notes"
+            name: "Verification",
+            tagline: "On-chain wallet & asset ownership — it's checking your pass right now.",
+            stage: .live
         ),
-        Perk(
-            symbol: "swift",
-            name: "swift-algochat · algokit · algorand",
-            detail: "The CorvidLabs Algorand Swift stack"
+        Product(
+            symbol: "square.grid.2x2.fill",
+            name: "Apps, tools & sites",
+            tagline: "More CorvidLabs apps, websites, and client releases as they ship.",
+            stage: .soon
         )
     ]
 
