@@ -54,8 +54,20 @@ coordinator.launch()
 |-------|-------|
 | Feature flag `enable_messaging` | ✅ added (default off) |
 | Core service + models + transport seam | ✅ written, spec-covered, spec-sync green |
-| `AlgoChatTransport` SDK adapter | ⚠️ written, NOT build-verified (`VERIFY:` markers) |
+| `AlgoChatTransport` SDK adapter | ✅ API verified on LocalNet (see below); only the key bridge is open |
 | UI (list + chat + coordinator) | ✅ written (plain UIKit), NOT build-verified |
+
+## LocalNet verification
+
+The exact SDK API this adapter uses was proven end-to-end against a running
+AlgoKit LocalNet with a headless Swift harness: two funded accounts, Bob
+publishes his key on-chain, Alice discovers it via the indexer, sends an
+end-to-end-encrypted message, and Bob decrypts the original plaintext. This
+confirmed `conversations` / `conversation(with:)` / `refresh` / `send` /
+`fetchPublicKey` / `publishKeyAndWait`, `Conversation.participant`, and
+`Message.id/.content/.timestamp/.direction` — and surfaced the
+`Conversation.peerAddress → .participant` fix now applied here. What remains
+unverified is only the app build + the account/key bridge below.
 | SPM package wiring | ⬜ Xcode step above |
 | Account/key bridge | ⬜ step 2 above |
 | Menu hook | ⬜ step 3 above |
