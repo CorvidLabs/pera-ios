@@ -70,8 +70,8 @@ extension BuySellOptionsScreen {
 
         addBuyContextHeader()
         addBuyContext()
-        addSellContextHeader()
-        addSellContext()
+        // Corvid Nevermore — the Sell section only offered Bidali gift cards,
+        // which we don't ship. Drop it entirely.
     }
 }
 
@@ -94,6 +94,8 @@ extension BuySellOptionsScreen {
             $0.top == buyContextHeaderView.snp.bottom + theme.spacingBetweenBuyContextHeaderAndBuyContext
             $0.leading == 0
             $0.trailing == 0
+            // Now the last section, so it defines the context's bottom.
+            $0.bottom == 0
         }
 
         addBuyOptions()
