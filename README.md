@@ -1,24 +1,33 @@
-# Pera Wallet
+# Corvid Wallet
 
-## Overview
-Welcome to the code that powers Pera Wallet! This repo will always contain the source code for the latest publicly available Pera Wallet version (official download links can be found at [perawallet.app](https://perawallet.app)). We want to make sure that we focus not only on great features and experiences but also security, transparency, and community involvement.
+A CorvidLabs-branded Algorand wallet for iOS — a fork of the open-source
+[Pera Wallet](https://github.com/perawallet/pera-wallet), released by Pera
+Wallet, LDA under the Apache License 2.0.
 
-Other than version numbers changing, news and other important release information (like release notes) will not be posted here. To stay up to date on the latest news, features, release notes, tutorials, and more, please check out [perawallet.app](https://perawallet.app).
+## Attribution & license
 
-## Contributing
-Development happens in this open source repo for the Pera iOS app. Algorand community is always welcome to contribute by reviewing or opening new pull requests.
+This project is a derivative work of **Pera Wallet** (Copyright 2022–2025 Pera
+Wallet, LDA), used under the Apache License, Version 2.0. The full license is in
+[`LICENSE`](LICENSE) and attribution + a summary of CorvidLabs's changes are in
+[`NOTICE`](NOTICE).
 
-If you simply need help, want to report a bug, or want to suggest a feature, the best place to do so is via our community channels:
+> "Pera" and "Pera Wallet" are trademarks of Pera Wallet, LDA. This fork is **not**
+> affiliated with, endorsed by, or sponsored by Pera Wallet, LDA, and does not use
+> the Pera name or logos to identify itself. Per-file copyright notices from the
+> original authors are retained as the license requires.
 
-## Community
-- [Discord](https://discord.io/Pera)
-- [Reddit](https://www.reddit.com/r/PeraWallet/)
-- [Telegram](https://t.me/PeraWallet)
+## CorvidLabs additions
 
-And if you need support, our support knowledgebase and contact channels are here: [perawallet.app/support](https://perawallet.app/support)
+- **Brand**: identity and palette from the [CorvidLabs design system](https://github.com/CorvidLabs/design-system) (teal "sheen" `#0E6F66`, not purple).
+- **spec-sync**: bidirectional spec-to-code validation across the codebase (CI-enforced).
+- **fledge**: task runner (`fledge run spec-check`, lanes).
+- **AlgoChat messaging** (experimental, feature-flagged off): end-to-end encrypted on-chain messaging.
 
 ## Building
-For instructions on how to build the applications in this repo, see [BUILDING.md](./BUILDING.md).
 
-## Testing
-This project is tested with BrowserStack (open source license).
+The app builds with no extra setup — see [`BUILDING.md`](BUILDING.md).
+
+## Contributing
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md). Contributions are accepted under the
+Apache License 2.0.

@@ -1,0 +1,31 @@
+Corvid Wallet
+Copyright 2026 CorvidLabs
+
+This product is a fork of Pera Wallet and includes software developed by
+Pera Wallet, LDA:
+
+    Pera Wallet
+    Copyright 2022-2025 Pera Wallet, LDA
+    https://github.com/perawallet/pera-wallet
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use these files except in compliance with the License. A copy of the License
+is included in the LICENSE file in this repository.
+
+------------------------------------------------------------------------------
+Changes by CorvidLabs (per Apache License 2.0, Section 4.b)
+------------------------------------------------------------------------------
+
+CorvidLabs has modified the original Pera Wallet source. Notable changes:
+
+  * Rebranded the product identity from "Pera Wallet" to "Corvid Wallet"
+    (app display name, README, and brand colors per the CorvidLabs design
+    system). The "Pera" and "Pera Wallet" names and logos are trademarks of
+    Pera Wallet, LDA and are NOT used to identify this fork.
+  * Added spec-sync specifications and a fledge task configuration.
+  * Added an experimental, feature-flagged AlgoChat encrypted-messaging module.
+
+Original per-file copyright notices from Pera Wallet, LDA are retained in the
+source files as required by the Apache License, Version 2.0.
+
+This fork is not affiliated with, endorsed by, or sponsored by Pera Wallet, LDA.
