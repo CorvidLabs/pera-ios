@@ -17,9 +17,13 @@
 //   The Nevermore tab: a token-gated membership screen. It always shows the
 //   Nevermore lifetime pass and the flagship app (Quill); if any account in the
 //   wallet holds the pass, the hero flips to "Pro unlocked" and the perks open up.
+//
+//   Fully on the CorvidLabs design system: every color is a `Colors.*` token
+//   (automatic light/dark via the asset catalog) and every font is `Fonts.DMSans`.
 
 import UIKit
 import SnapKit
+import MacaroonUIKit
 import pera_wallet_core
 
 final class NevermoreViewController: BaseViewController {
@@ -47,21 +51,27 @@ final class NevermoreViewController: BaseViewController {
     private lazy var moreStack = UIStackView()
     private lazy var footerCard = UIView()
 
-    // MARK: - Palette (CorvidLabs, light/dark)
+    // MARK: - Design-system tokens
 
-    private static func dyn(_ light: UInt, _ dark: UInt) -> UIColor {
-        UIColor { $0.userInterfaceStyle == .dark ? UIColor(nvHex: dark) : UIColor(nvHex: light) }
+    private var accent: UIColor { Colors.Button.Primary.background.uiColor }
+    private var onAccent: UIColor { Colors.Button.Primary.text.uiColor }
+    private var paper: UIColor { Colors.Defaults.background.uiColor }
+    private var surface: UIColor { Colors.Layer.grayLightest.uiColor }
+    private var well: UIColor { Colors.Layer.grayLighter.uiColor }
+    private var ink: UIColor { Colors.Text.main.uiColor }
+    private var inkMuted: UIColor { Colors.Text.gray.uiColor }
+    private var inkFaint: UIColor { Colors.Text.grayLighter.uiColor }
+    private var hairline: UIColor { Colors.Layer.gray.uiColor }
+    private var onDark: UIColor { Colors.Text.white.uiColor }
+
+    /// The Nevermore pass keeps a signature gradient — a branded card artifact —
+    /// anchored on the design-system primary so the mid-stop always reads on-brand.
+    private let passEdgeTop = UIColor(red: 0x0B / 255, green: 0x16 / 255, blue: 0x22 / 255, alpha: 1)
+    private let passEdgeBottom = UIColor(red: 0x3A / 255, green: 0x1F / 255, blue: 0x47 / 255, alpha: 1)
+
+    private func dm(_ size: CGFloat, _ face: Fonts.DMSans = .regular) -> UIFont {
+        face.make(size).uiFont
     }
-    private let accent     = dyn(0x0E6F66, 0x45D0BC)
-    private let paper      = dyn(0xFAF9F6, 0x131619)
-    private let surface    = dyn(0xFFFFFF, 0x1B1F23)
-    private let well       = dyn(0xEFEDE7, 0x272C31)
-    private let ink        = dyn(0x15181B, 0xF4F3EF)
-    private let inkMuted   = dyn(0x34383D, 0xC8C6BE)
-    private let inkFaint   = dyn(0x6A6E74, 0x8E928A)
-    private let accentSoft = dyn(0xE2EFEC, 0x183A35)
-    private let hairline   = dyn(0xE7E4DD, 0x2C3137)
-    private let onDark     = UIColor(nvHex: 0xFAF9F6)
 
     // MARK: - Lifecycle
 
@@ -101,8 +111,8 @@ final class NevermoreViewController: BaseViewController {
     private func applyState() {
         if isMember {
             statusPill.text = "  ●  ACTIVE  "
-            statusPill.textColor = UIColor(nvHex: 0x0A1410)
-            statusPill.backgroundColor = UIColor(nvHex: 0x45D0BC)
+            statusPill.textColor = onAccent
+            statusPill.backgroundColor = accent
             headlineLabel.text = "You're a lifetime member."
             heroSectionLabel.text = "YOUR FLAGSHIP — PRO UNLOCKED"
             footerCard.isHidden = true
@@ -126,7 +136,7 @@ final class NevermoreViewController: BaseViewController {
         scrollView.alwaysBounceVertical = true
         scrollView.showsVerticalScrollIndicator = false
         // Pin to the safe area so the content never underlaps the custom tab bar
-        // (TabBarContainer pads the screen's safe area by the tab-bar height).
+        // (TabBarContainer pads the screen's bottom safe area by the tab-bar height).
         scrollView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             $0.leading.equalToSuperview()
@@ -148,11 +158,11 @@ final class NevermoreViewController: BaseViewController {
         contentStack.addArrangedSubview(passCard)
 
         headlineLabel.numberOfLines = 0
-        headlineLabel.font = .systemFont(ofSize: 22, weight: .bold)
+        headlineLabel.font = dm(22, .bold)
         headlineLabel.textColor = ink
         contentStack.addArrangedSubview(headlineLabel)
 
-        heroSectionLabel.font = .systemFont(ofSize: 12, weight: .heavy)
+        heroSectionLabel.font = dm(12, .bold)
         heroSectionLabel.textColor = inkFaint
         contentStack.setCustomSpacing(8, after: headlineLabel)
         contentStack.addArrangedSubview(heroSectionLabel)
@@ -160,7 +170,7 @@ final class NevermoreViewController: BaseViewController {
         contentStack.addArrangedSubview(heroContainer)
 
         moreSectionLabel.text = "MORE UNLOCKING SOON"
-        moreSectionLabel.font = .systemFont(ofSize: 12, weight: .heavy)
+        moreSectionLabel.font = dm(12, .bold)
         moreSectionLabel.textColor = inkFaint
         contentStack.setCustomSpacing(22, after: heroContainer)
         contentStack.addArrangedSubview(moreSectionLabel)
@@ -181,9 +191,9 @@ final class NevermoreViewController: BaseViewController {
         passCard.snp.makeConstraints { $0.height.equalTo(196) }
 
         passGradient.colors = [
-            UIColor(nvHex: 0x0B1622).cgColor,
-            UIColor(nvHex: 0x0E6F66).cgColor,
-            UIColor(nvHex: 0x3A1F47).cgColor
+            passEdgeTop.cgColor,
+            accent.cgColor,
+            passEdgeBottom.cgColor
         ]
         passGradient.locations = [0.0, 0.55, 1.0]
         passGradient.startPoint = CGPoint(x: 0, y: 0)
@@ -202,7 +212,7 @@ final class NevermoreViewController: BaseViewController {
 
         let kicker = UILabel()
         kicker.text = "CORVIDLABS · LIFETIME PASS"
-        kicker.font = .systemFont(ofSize: 11, weight: .heavy)
+        kicker.font = dm(11, .bold)
         kicker.textColor = onDark.withAlphaComponent(0.75)
         passCard.addSubview(kicker)
         kicker.snp.makeConstraints {
@@ -211,7 +221,7 @@ final class NevermoreViewController: BaseViewController {
         }
 
         passTitleLabel.text = "Nevermore"
-        passTitleLabel.font = UIFont(name: "Georgia-Bold", size: 40) ?? .systemFont(ofSize: 40, weight: .bold)
+        passTitleLabel.font = dm(34, .bold)
         passTitleLabel.textColor = onDark
         passCard.addSubview(passTitleLabel)
         passTitleLabel.snp.makeConstraints {
@@ -220,7 +230,7 @@ final class NevermoreViewController: BaseViewController {
         }
 
         passSubtitleLabel.text = "Early access today. Pro on everything, for life."
-        passSubtitleLabel.font = .systemFont(ofSize: 13, weight: .medium)
+        passSubtitleLabel.font = dm(13, .medium)
         passSubtitleLabel.textColor = onDark.withAlphaComponent(0.8)
         passSubtitleLabel.numberOfLines = 2
         passCard.addSubview(passSubtitleLabel)
@@ -230,7 +240,7 @@ final class NevermoreViewController: BaseViewController {
             $0.trailing.lessThanOrEqualToSuperview().inset(22)
         }
 
-        statusPill.font = .systemFont(ofSize: 11, weight: .heavy)
+        statusPill.font = dm(11, .bold)
         statusPill.layer.cornerRadius = 11
         statusPill.layer.cornerCurve = .continuous
         statusPill.clipsToBounds = true
@@ -260,7 +270,7 @@ final class NevermoreViewController: BaseViewController {
         card.layer.borderColor = (isMember ? accent.withAlphaComponent(0.55) : hairline).cgColor
 
         let iconWell = UIView()
-        iconWell.backgroundColor = accentSoft
+        iconWell.backgroundColor = well
         iconWell.layer.cornerRadius = 14
         iconWell.layer.cornerCurve = .continuous
         card.addSubview(iconWell)
@@ -277,7 +287,7 @@ final class NevermoreViewController: BaseViewController {
 
         let nameLabel = UILabel()
         nameLabel.text = product.name
-        nameLabel.font = .systemFont(ofSize: 20, weight: .bold)
+        nameLabel.font = dm(20, .bold)
         nameLabel.textColor = ink
 
         let stagePill = makeStagePill(product.stage)
@@ -296,7 +306,7 @@ final class NevermoreViewController: BaseViewController {
 
         let taglineLabel = UILabel()
         taglineLabel.text = product.tagline
-        taglineLabel.font = .systemFont(ofSize: 13.5, weight: .regular)
+        taglineLabel.font = dm(13.5, .regular)
         taglineLabel.textColor = inkMuted
         taglineLabel.numberOfLines = 0
         card.addSubview(taglineLabel)
@@ -331,7 +341,7 @@ final class NevermoreViewController: BaseViewController {
 
         let perkLabel = UILabel()
         perkLabel.text = isMember ? NevermoreMembership.heroMemberPerk : NevermoreMembership.heroPublicPerk
-        perkLabel.font = .systemFont(ofSize: 14, weight: .semibold)
+        perkLabel.font = dm(14, .medium)
         perkLabel.textColor = isMember ? accent : inkMuted
         perkLabel.numberOfLines = 1
         perkLabel.adjustsFontSizeToFitWidth = true
@@ -349,16 +359,16 @@ final class NevermoreViewController: BaseViewController {
     private func makeStagePill(_ stage: NevermoreMembership.Stage) -> UILabel {
         let pill = PaddedLabel()
         pill.text = stage.label
-        pill.font = .systemFont(ofSize: 10, weight: .heavy)
+        pill.font = dm(10, .bold)
         pill.layer.cornerRadius = 9
         pill.layer.cornerCurve = .continuous
         pill.clipsToBounds = true
         switch stage {
         case .live:
             pill.textColor = accent
-            pill.backgroundColor = accentSoft
+            pill.backgroundColor = well
         case .beta:
-            pill.textColor = onDark
+            pill.textColor = onAccent
             pill.backgroundColor = accent
         case .soon:
             pill.textColor = inkFaint
@@ -387,7 +397,7 @@ final class NevermoreViewController: BaseViewController {
         let isLive = product.stage == .live
 
         let iconWell = UIView()
-        iconWell.backgroundColor = isLive ? accentSoft : well
+        iconWell.backgroundColor = well
         iconWell.layer.cornerRadius = 10
         iconWell.layer.cornerCurve = .continuous
         row.addSubview(iconWell)
@@ -405,12 +415,12 @@ final class NevermoreViewController: BaseViewController {
 
         let nameLabel = UILabel()
         nameLabel.text = product.name
-        nameLabel.font = .systemFont(ofSize: 15, weight: .semibold)
+        nameLabel.font = dm(15, .medium)
         nameLabel.textColor = ink
 
         let detailLabel = UILabel()
         detailLabel.text = product.tagline
-        detailLabel.font = .systemFont(ofSize: 12.5, weight: .regular)
+        detailLabel.font = dm(12.5, .regular)
         detailLabel.textColor = inkMuted
         detailLabel.numberOfLines = 2
 
@@ -437,24 +447,24 @@ final class NevermoreViewController: BaseViewController {
     }
 
     private func buildFooterCard() {
-        footerCard.backgroundColor = accentSoft
+        footerCard.backgroundColor = well
         footerCard.layer.cornerRadius = 16
         footerCard.layer.cornerCurve = .continuous
 
         let title = UILabel()
         title.text = "Get the pass"
-        title.font = .systemFont(ofSize: 15, weight: .bold)
+        title.font = dm(15, .bold)
         title.textColor = ink
 
         let body = UILabel()
         body.text = "Nevermore is a one-time lifetime pass — not a mint. Every app stays free for everyone; the pass unlocks Pro and gets you into each beta first."
-        body.font = .systemFont(ofSize: 13, weight: .regular)
+        body.font = dm(13, .regular)
         body.textColor = inkMuted
         body.numberOfLines = 0
 
         let link = UILabel()
         link.text = "corvidlabs.com"
-        link.font = .systemFont(ofSize: 13, weight: .semibold)
+        link.font = dm(13, .medium)
         link.textColor = accent
 
         let stack = UIStackView(arrangedSubviews: [title, body, link])
@@ -478,18 +488,5 @@ private final class PaddedLabel: UILabel {
         let size = super.intrinsicContentSize
         return CGSize(width: size.width + inset.left + inset.right,
                       height: size.height + inset.top + inset.bottom)
-    }
-}
-
-// MARK: - Color helper
-
-private extension UIColor {
-    convenience init(nvHex: UInt) {
-        self.init(
-            red: CGFloat((nvHex >> 16) & 0xFF) / 255,
-            green: CGFloat((nvHex >> 8) & 0xFF) / 255,
-            blue: CGFloat(nvHex & 0xFF) / 255,
-            alpha: 1
-        )
     }
 }
