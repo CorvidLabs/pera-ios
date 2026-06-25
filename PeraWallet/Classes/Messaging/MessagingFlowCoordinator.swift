@@ -63,21 +63,11 @@ final class MessagingFlowCoordinator {
         controller.navigationController?.pushViewController(chat, animated: true)
     }
 
-    /// Builds the production messaging service.
-    ///
-    /// NOTE: the `AlgoChatTransport` client resolver is the unresolved bridge
-    /// between Pera's HD-wallet accounts and the AlgoChat SDK account/signer.
-    /// Until that is implemented, the resolver throws, so the feature must stay
-    /// behind the `messagingEnabled` flag (default off).
-    static func makeService(
-        featureFlagService: FeatureFlagServicing
-    ) -> PeraMessagingServicing {
-        let transport = AlgoChatTransport { _ in
-            // TODO: construct an AlgoChat client from the user's HD-wallet account.
-            throw MessagingError.transportFailure()
-        }
-        return PeraMessagingService(featureFlagService: featureFlagService, transport: transport)
-    }
+    // The messaging service is composed at the app's composition root via
+    // `AlgoChatClientFactory.makeMessagingService(...)` (in pera_wallet_core,
+    // which owns the SDK import) and injected here, so this UI never imports
+    // the AlgoChat SDK. See PeraWalletCore/Messaging/INTEGRATION.md for the
+    // seed-provider wiring.
 }
 
 extension MessagingFlowCoordinator: ConversationListViewControllerDelegate {

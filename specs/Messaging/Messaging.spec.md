@@ -3,10 +3,12 @@ module: Messaging
 version: 1
 status: active
 files:
+  - PeraWalletCore/Messaging/AlgoChatClientFactory.swift
   - PeraWalletCore/Messaging/AlgoChatTransport.swift
   - PeraWalletCore/Messaging/Data/ChatMessage.swift
   - PeraWalletCore/Messaging/Data/ConversationSummary.swift
   - PeraWalletCore/Messaging/Data/MessagingError.swift
+  - PeraWalletCore/Messaging/MessagingKeyDerivation.swift
   - PeraWalletCore/Messaging/MessagingService.swift
   - PeraWalletCore/Messaging/MessagingTransport.swift
 db_tables: []
@@ -53,6 +55,12 @@ Pera-defined transport seam. Pera-facing value types (`ChatMessage`,
 | `messages` | Message history with a peer for a given signing account. |
 | `init` | Initializers for the value types, service, and transport adapter. |
 | `ClientResolver` | Closure type resolving a ready `AlgoChat` client for an address (the account/key bridge seam). |
+| `SeedProvider` | Closure type returning the HD-wallet seed bytes for an account address. |
+| `makeClient` | Builds an `AlgoChat` client for an address by deriving its messaging key from the wallet seed. |
+| `clientResolver` | Adapts the factory into an `AlgoChatTransport.ClientResolver`. |
+| `makeMessagingService` | Composes the full messaging service (factory + transport + flag) at the app root. |
+| `MessagingKeyDerivation` | Derives the dedicated 32-byte AlgoChat messaging key from an HD-wallet seed (CryptoKit HKDF). |
+| `messagingKey` | Deterministic HKDF-SHA256 derivation: seed → 32-byte messaging key (LocalNet-verified). |
 
 ## Invariants
 

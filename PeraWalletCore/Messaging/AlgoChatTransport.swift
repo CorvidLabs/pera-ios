@@ -35,6 +35,7 @@
 
 import Foundation
 import AlgoChat
+import Algorand
 
 /// `MessagingTransport` backed by the on-chain, end-to-end-encrypted AlgoChat SDK.
 public final class AlgoChatTransport: MessagingTransport {
@@ -108,7 +109,7 @@ public final class AlgoChatTransport: MessagingTransport {
     ) async throws(MessagingError) {
         do {
             let chat = try await resolveClient(address)
-            try await chat.publishKeyAndWait() // confirmed: publishKeyAndWait()
+            _ = try await chat.publishKeyAndWait() // confirmed: publishKeyAndWait()
         } catch let error as MessagingError {
             throw error
         } catch {
