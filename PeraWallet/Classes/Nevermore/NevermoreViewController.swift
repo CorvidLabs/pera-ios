@@ -71,6 +71,11 @@ final class NevermoreViewController: BaseViewController {
         view.backgroundColor = paper
     }
 
+    override func customizeTabBarAppearence() {
+        // Keep the main tab bar visible — this screen is a root tab, not a pushed screen.
+        tabBarHidden = false
+    }
+
     override func prepareLayout() {
         super.prepareLayout()
         buildLayout()
@@ -120,7 +125,14 @@ final class NevermoreViewController: BaseViewController {
         view.addSubview(scrollView)
         scrollView.alwaysBounceVertical = true
         scrollView.showsVerticalScrollIndicator = false
-        scrollView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        // Pin to the safe area so the content never underlaps the custom tab bar
+        // (TabBarContainer pads the screen's safe area by the tab-bar height).
+        scrollView.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
+            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
+        }
 
         scrollView.addSubview(contentStack)
         contentStack.axis = .vertical
