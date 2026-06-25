@@ -20,6 +20,7 @@
 
 import UIKit
 import SnapKit
+import MacaroonUIKit
 import pera_wallet_core
 
 final class AlgoChatMessagesViewController: BaseViewController {
@@ -58,20 +59,23 @@ final class AlgoChatMessagesViewController: BaseViewController {
     private lazy var composeField = UITextField()
     private lazy var sendButton = UIButton(type: .system)
 
-    // MARK: - Palette (CorvidLabs, light/dark)
+    // MARK: - Design-system tokens
 
-    private static func dyn(_ light: UInt, _ dark: UInt) -> UIColor {
-        UIColor { $0.userInterfaceStyle == .dark ? UIColor(rgbHex: dark) : UIColor(rgbHex: light) }
+    private var accent: UIColor { Colors.Button.Primary.background.uiColor }
+    private var onAccent: UIColor { Colors.Button.Primary.text.uiColor }
+    private var paper: UIColor { Colors.Defaults.background.uiColor }
+    private var surface: UIColor { Colors.Layer.grayLightest.uiColor }
+    private var well: UIColor { Colors.Layer.grayLighter.uiColor }
+    private var ink: UIColor { Colors.Text.main.uiColor }
+    private var inkMuted: UIColor { Colors.Text.gray.uiColor }
+    private var inkFaint: UIColor { Colors.Text.grayLighter.uiColor }
+
+    private func dm(_ size: CGFloat, _ face: Fonts.DMSans = .regular) -> UIFont {
+        face.make(size).uiFont
     }
-    private let accent    = dyn(0x0E6F66, 0x45D0BC)
-    private let paper     = dyn(0xFAF9F6, 0x131619)
-    private let surface   = dyn(0xFFFFFF, 0x1B1F23)
-    private let well      = dyn(0xEFEDE7, 0x272C31)
-    private let ink       = dyn(0x15181B, 0xF4F3EF)
-    private let inkMuted  = dyn(0x34383D, 0xC8C6BE)
-    private let inkFaint  = dyn(0x6A6E74, 0x8E928A)
-    private let accentSoft = dyn(0xE2EFEC, 0x183A35)
-    private let onAccent  = UIColor(rgbHex: 0xFAF9F6)
+    private func mono(_ size: CGFloat, _ face: Fonts.DMMono = .regular) -> UIFont {
+        face.make(size).uiFont
+    }
 
     // MARK: - Initializers
 
@@ -95,30 +99,30 @@ final class AlgoChatMessagesViewController: BaseViewController {
         addressCard.layer.borderColor = accent.withAlphaComponent(0.18).cgColor
 
         addressTitleLabel.text = "YOUR ALGOCHAT ADDRESS"
-        addressTitleLabel.font = .systemFont(ofSize: 11, weight: .bold)
+        addressTitleLabel.font = dm(11, .bold)
         addressTitleLabel.textColor = accent
         addressTitleLabel.setContentHuggingPriority(.required, for: .vertical)
 
         addressValueLabel.text = "Deriving your encrypted identity…"
-        addressValueLabel.font = .monospacedSystemFont(ofSize: 13, weight: .medium)
+        addressValueLabel.font = mono(13, .medium)
         addressValueLabel.textColor = ink
         addressValueLabel.numberOfLines = 2
         addressValueLabel.lineBreakMode = .byTruncatingMiddle
 
         copyHintLabel.text = "Tap to copy"
-        copyHintLabel.font = .systemFont(ofSize: 11, weight: .semibold)
+        copyHintLabel.font = dm(11, .medium)
         copyHintLabel.textColor = inkFaint
 
         // Recipient
         toLabel.text = "TO"
-        toLabel.font = .systemFont(ofSize: 11, weight: .bold)
+        toLabel.font = dm(11, .bold)
         toLabel.textColor = inkFaint
 
         peerContainer.backgroundColor = well
         peerContainer.layer.cornerRadius = 14
 
         peerField.placeholder = "Recipient's messaging address"
-        peerField.font = .monospacedSystemFont(ofSize: 13, weight: .regular)
+        peerField.font = mono(13, .regular)
         peerField.textColor = ink
         peerField.autocapitalizationType = .allCharacters
         peerField.autocorrectionType = .no
@@ -126,7 +130,7 @@ final class AlgoChatMessagesViewController: BaseViewController {
         peerField.returnKeyType = .done
         peerField.attributedPlaceholder = NSAttributedString(
             string: "Recipient's messaging address",
-            attributes: [.foregroundColor: inkFaint, .font: UIFont.systemFont(ofSize: 14)]
+            attributes: [.foregroundColor: inkFaint, .font: dm(14)]
         )
 
         let qrConfig = UIImage.SymbolConfiguration(pointSize: 19, weight: .regular)
@@ -134,10 +138,10 @@ final class AlgoChatMessagesViewController: BaseViewController {
         qrButton.tintColor = accent
 
         pasteButton.setTitle("Paste", for: .normal)
-        pasteButton.titleLabel?.font = .systemFont(ofSize: 14, weight: .semibold)
+        pasteButton.titleLabel?.font = dm(14, .medium)
         pasteButton.setTitleColor(accent, for: .normal)
 
-        statusLabel.font = .systemFont(ofSize: 13, weight: .medium)
+        statusLabel.font = dm(13, .medium)
         statusLabel.textColor = inkFaint
         statusLabel.numberOfLines = 2
 
@@ -151,12 +155,12 @@ final class AlgoChatMessagesViewController: BaseViewController {
         tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 12, right: 0)
 
         emptyTitleLabel.text = "No messages yet"
-        emptyTitleLabel.font = .systemFont(ofSize: 17, weight: .semibold)
+        emptyTitleLabel.font = dm(17, .medium)
         emptyTitleLabel.textColor = inkMuted
         emptyTitleLabel.textAlignment = .center
 
         emptyBodyLabel.text = "Paste a recipient's address above to\nstart an end-to-end encrypted,\non-chain conversation."
-        emptyBodyLabel.font = .systemFont(ofSize: 14, weight: .regular)
+        emptyBodyLabel.font = dm(14, .regular)
         emptyBodyLabel.textColor = inkFaint
         emptyBodyLabel.numberOfLines = 0
         emptyBodyLabel.textAlignment = .center
@@ -168,12 +172,12 @@ final class AlgoChatMessagesViewController: BaseViewController {
         composeContainer.layer.cornerRadius = 22
 
         composeField.placeholder = "Message"
-        composeField.font = .systemFont(ofSize: 16)
+        composeField.font = dm(16)
         composeField.textColor = ink
         composeField.returnKeyType = .send
         composeField.attributedPlaceholder = NSAttributedString(
             string: "Message",
-            attributes: [.foregroundColor: inkFaint, .font: UIFont.systemFont(ofSize: 16)]
+            attributes: [.foregroundColor: inkFaint, .font: dm(16)]
         )
 
         let arrowConfig = UIImage.SymbolConfiguration(pointSize: 18, weight: .bold)
@@ -519,8 +523,8 @@ private final class MessageCell: UITableViewCell {
         bubble.layer.cornerRadius = 18
         bubble.layer.cornerCurve = .continuous
         label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 15.5)
-        timeLabel.font = .systemFont(ofSize: 11, weight: .medium)
+        label.font = Fonts.DMSans.regular.make(15.5).uiFont
+        timeLabel.font = Fonts.DMSans.medium.make(11).uiFont
         timeLabel.textAlignment = .right
         contentView.addSubview(bubble)
         bubble.addSubview(label)
@@ -567,19 +571,5 @@ private final class MessageCell: UITableViewCell {
             trailingConstraint?.deactivate()
             leadingConstraint?.activate()
         }
-    }
-}
-
-// MARK: - Color helper
-
-private extension UIColor {
-    /// Builds an opaque color from a 24-bit RGB hex value (e.g. 0x0E6F66).
-    convenience init(rgbHex: UInt) {
-        self.init(
-            red: CGFloat((rgbHex >> 16) & 0xFF) / 255,
-            green: CGFloat((rgbHex >> 8) & 0xFF) / 255,
-            blue: CGFloat(rgbHex & 0xFF) / 255,
-            alpha: 1
-        )
     }
 }
