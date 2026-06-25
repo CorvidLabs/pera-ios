@@ -251,8 +251,8 @@ Defines the domain data layer for Pera Wallet: the Swift value/entity types repr
 | `containsCollectibleAsset` | Whether the account holds a given collectible asset id. |
 | `containsAsset` | Whether the account holds a given asset id of either kind. |
 | `sorted` | Returns the assets in sorted order. |
-| `usdc` | Convenience reference to the USDC asset. |
-| `usdt` | Convenience reference to the USDT asset. |
+| `usdc` | Returns the account's USDC asset holding for a given network, if opted in. |
+| `usdt` | Returns the account's USDT asset holding for a given network, if opted in. |
 | `update` | Updates a model's mutable fields from another instance. |
 | `AccountAuthorization` | Enum modeling the account's authorization/rekey state. |
 | `rawValue` | Raw backing value of the enum case. |
@@ -402,7 +402,7 @@ Defines the domain data layer for Pera Wallet: the Swift value/entity types repr
 | `al` | App-call argument list (raw `AppCallArgument` array). |
 | `aprv` | Approval-program reference value for an app call. |
 | `OnCompletion` | Enum of application-call on-completion actions. |
-| `uiRepresentation` | Localized string representation for UI display. |
+| `uiRepresentation` | String label of the app-call on-completion action for UI display (NoOp/OptIn/etc.). |
 | `AppCallArgument` | Resource/argument entry referenced by an app-call transaction. |
 | `d` | App-call resource field (asset/app/holding identifier). |
 | `s` | App-call resource field (secondary identifier). |
@@ -791,7 +791,7 @@ Defines the domain data layer for Pera Wallet: the Swift value/entity types repr
 | `currentAssetId` | Asset id relevant to the current WC transaction. |
 | `warningCount` | Number of warnings flagged for the WC transaction. |
 | `AppCallOnComplete` | Enum of WalletConnect app-call on-completion actions. |
-| `representation` | Localized string representation of the value. |
+| `representation` | String representation of the value (on-completion action name, or schema "N Bytes / M Uint" summary). |
 | `numberOfBytes` | Byte-slice slot count of a WC app schema. |
 | `numberofInts` | Integer slot count of a WC app schema. |
 | `containsSignerInTheWallet` | Whether a requested signer exists in the local wallet. |

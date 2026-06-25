@@ -224,7 +224,7 @@ Utils is the shared foundation layer of PeraWalletCore. It bundles cross-cutting
 | `decode` | Decodes a bundled JSON resource into a Decodable type. |
 | `whitespacesAndDashes` | Character set combining whitespace and dash characters. |
 | `errorDescription` | Localized error title/subtitle describing a failure condition. |
-| `isIntrinsicMetric` | True when the value equals the intrinsic content-size sentinel. |
+| `isIntrinsicMetric` | True when the value is a real metric (not `UIView.noIntrinsicMetric`). |
 | `upper` | Ceiling of the CGFloat. |
 | `lower` | Floor of the CGFloat. |
 | `nearest` | Rounded-to-nearest value of the CGFloat. |
@@ -239,7 +239,7 @@ Utils is the shared foundation layer of PeraWalletCore. It bundles cross-cutting
 | `DateFormat` | Enumeration of date format strings used across the app. |
 | `isNonEmpty` | True when the array contains at least one element. |
 | `containsSameElements` | True when two arrays contain the same elements regardless of order. |
-| `firstIndex` | First index of the collection (or first matching a keyPath equality). |
+| `firstIndex` | First index whose keyPath value equals the given element's keyPath value. |
 | `sorted` | Sorts elements by a comparable keyPath. |
 | `previousElement` | Element preceding the element at the given index, if any. |
 | `nextElement` | Element following the element at the given index, if any. |
@@ -347,7 +347,7 @@ Utils is the shared foundation layer of PeraWalletCore. It bundles cross-cutting
 | `generateSeed` | Derives a BIP39 seed from a mnemonic or entropy. |
 | `generateEntropy` | Derives BIP39 entropy from a mnemonic. |
 | `generate256BitEntropy` | Generates 256 bits of cryptographically secure entropy. |
-| `add` | Registers a script message handler / adds an observer (per type). |
+| `add` | Registers a typed script message handler / adds text attributes to an attributed string (per type). |
 | `removeScriptMessageHandlers` | Removes script message handlers for the given messages. |
 | `removeScriptMessageHandler` | Removes the script message handler for a single message. |
 | `InAppBrowserScriptMessage` | Protocol describing an in-app-browser script message name. |
@@ -394,7 +394,7 @@ Utils is the shared foundation layer of PeraWalletCore. It bundles cross-cutting
 | `separators` | Character set treated as word separators when parsing mnemonics. |
 | `wordCount` | Expected number of mnemonic words. |
 | `parse` | Parses input text into mnemonic words, validating the count. |
-| `Mnemonics` | Namespace for mnemonic constants and aliases. |
+| `Mnemonics` | Enum of parsed-mnemonic results (`.zero`/`.one`/`.full`) holding the word(s). |
 | `Word` | Type alias `String` for a single mnemonic word. |
 | `MnemonicsError` | Error enum for mnemonic parsing failures. |
 | `Constants` | Namespace of shared string constants (queues, notifications, cards). |
@@ -483,7 +483,7 @@ Utils is the shared foundation layer of PeraWalletCore. It bundles cross-cutting
 | `encoding` | Data encoding used for signing metadata. |
 | `schema` | Schema identifier for the data being signed. |
 | `HDWalletSDK` | Protocol bridging the native HD wallet SDK (derive/sign/verify/ECDH). |
-| `HDWalletDerivationType` | Enum of HD derivation schemes (e.g. peikert, khovratovich). |
+| `HDWalletDerivationType` | Enum of HD derivation schemes (`peikert`, `bip32`) mapped to the SDK's `BIP32DerivationType`. |
 | `toBIP32DerivationType` | Maps the case to the SDK's `BIP32DerivationType`. |
 | `from` | Builds the enum case from an SDK/source value. |
 | `HDWalletKeyContext` | Enum of HD key contexts mapped to the SDK `KeyContext`. |
