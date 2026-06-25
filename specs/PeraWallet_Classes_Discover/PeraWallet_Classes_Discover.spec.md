@@ -65,7 +65,7 @@ App-target UI/feature module (`PeraWallet/Classes/Discover`). Internal-by-defaul
 
 | Export | Description |
 |--------|-------------|
-| `BrowserAuthorizedAddressEventHandler` | Document caller-visible behavior and constraints. |
+| `BrowserAuthorizedAddressEventHandler` | Encodes the user's (optionally authorized-only, non-joint) accounts as base64 and injects them into an in-app browser web view via `handleMessage` JavaScript. |
 
 ## Invariants
 

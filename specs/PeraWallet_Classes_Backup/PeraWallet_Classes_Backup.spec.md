@@ -26,7 +26,7 @@ App-target UI/feature module (`PeraWallet/Classes/Backup`). Internal-by-default;
 
 | Export | Description |
 |--------|-------------|
-| `calculatePreferredSize` | Document caller-visible behavior and constraints. |
+| `calculatePreferredSize` | Macaroon view-sizing method computing a header/cell's preferred size for a given view model, layout sheet, and fitting size. |
 
 ## Invariants
 

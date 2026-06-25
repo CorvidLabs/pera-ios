@@ -69,7 +69,7 @@ App-target UI/feature module (`PeraWallet/Classes/BuySell`). Internal-by-default
 
 | Export | Description |
 |--------|-------------|
-| `calculatePreferredSize` | Document caller-visible behavior and constraints. |
+| `calculatePreferredSize` | Macaroon/UIKit view-sizing method computing the cell/header's preferred size for the given view model and layout size constraints. |
 
 ## Invariants
 

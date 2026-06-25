@@ -301,10 +301,10 @@ App-target UI/feature module (`PeraWallet/Classes/Shared`). Internal-by-default;
 
 | Export | Description |
 |--------|-------------|
-| `gestureRecognizer` | Document caller-visible behavior and constraints. |
-| `title` | Document caller-visible behavior and constraints. |
-| `someString` | Document caller-visible behavior and constraints. |
-| `asyncMain` | Document caller-visible behavior and constraints. |
+| `gestureRecognizer` | `UIGestureRecognizerDelegate` method on `ListView`; returns whether the list's gesture should require failure of another recognizer, cancelling it when the touched view opts out at that point. |
+| `title` | Mutable `AccountPreviewTitleViewModel?` on `AccountListItemViewModel` holding the account row's title/subtitle display model. |
+| `someString` | `Optional<String>` convenience returning the wrapped string or an empty string when nil. |
+| `asyncMain` | Schedules a closure to run on the main queue after a given delay, optionally weakly capturing an instance and skipping execution if it has been deallocated. |
 
 ## Invariants
 

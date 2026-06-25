@@ -119,14 +119,14 @@ App-target UI/feature module (`PeraWallet/Classes/Utils`). Internal-by-default; 
 
 | Export | Description |
 |--------|-------------|
-| `openInBrowser` | Document caller-visible behavior and constraints. |
-| `prepareForReuse` | Document caller-visible behavior and constraints. |
-| `customizeAppearance` | Document caller-visible behavior and constraints. |
-| `prepareLayout` | Document caller-visible behavior and constraints. |
-| `dequeueHeader` | Document caller-visible behavior and constraints. |
-| `dequeueFooter` | Document caller-visible behavior and constraints. |
-| `copyToClipboard` | Document caller-visible behavior and constraints. |
-| `MediaCleaner` | Document caller-visible behavior and constraints. |
+| `openInBrowser` | Opens the given URL in the system browser, no-op if the URL is malformed or not openable. |
+| `prepareForReuse` | Resets a reusable view's content (e.g. clears a `UILabel`'s text) before reuse in a list/collection. |
+| `customizeAppearance` | Applies the given style sheet to a `ViewComposable` view's appearance. |
+| `prepareLayout` | Builds a `ViewComposable` view's layout from the given layout sheet. |
+| `dequeueHeader` | Dequeues and type-casts a reusable section-header supplementary view for the given index path. |
+| `dequeueFooter` | Dequeues and type-casts a reusable section-footer supplementary view for the given index path. |
+| `copyToClipboard` | Copies the image to the general system pasteboard. |
+| `MediaCleaner` | One-time cleanup utility that removes stale temporary media files and clears the image cache. |
 
 ## Invariants
 

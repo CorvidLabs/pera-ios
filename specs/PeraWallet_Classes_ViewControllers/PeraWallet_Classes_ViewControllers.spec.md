@@ -137,7 +137,7 @@ App-target UI/feature module (`PeraWallet/Classes/ViewControllers`). Internal-by
 
 | Export | Description |
 |--------|-------------|
-| `calculatePreferredSize` | Document caller-visible behavior and constraints. |
+| `calculatePreferredSize` | Macaroon view-sizing method computing a cell/view's preferred size for a given view model, layout sheet, and fitting size. |
 
 ## Invariants
 

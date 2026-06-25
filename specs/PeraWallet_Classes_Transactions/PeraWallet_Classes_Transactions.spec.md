@@ -191,7 +191,7 @@ App-target UI/feature module (`PeraWallet/Classes/Transactions`). Internal-by-de
 
 | Export | Description |
 |--------|-------------|
-| `success` | Document caller-visible behavior and constraints. |
+| `success` | Convenience static property on `Result where Success == Void` returning a `.success(())` value for void-result validations. |
 
 ## Invariants
 

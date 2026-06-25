@@ -30,19 +30,19 @@ App-target UI/feature module (`PeraWallet/Utils`). Internal-by-default; see Publ
 
 | Export | Description |
 |--------|-------------|
-| `Loggable` | Document caller-visible behavior and constraints. |
-| `LogsStorage` | Document caller-visible behavior and constraints. |
-| `PeraLogger` | Document caller-visible behavior and constraints. |
-| `LoggerError` | Document caller-visible behavior and constraints. |
-| `shared` | Document caller-visible behavior and constraints. |
-| `log` | Document caller-visible behavior and constraints. |
-| `update` | Document caller-visible behavior and constraints. |
-| `createLogsFile` | Document caller-visible behavior and constraints. |
-| `deleteExportedLogsFile` | Document caller-visible behavior and constraints. |
-| `clearLogs` | Document caller-visible behavior and constraints. |
-| `clearLogsIfExceedingSizeLimit` | Document caller-visible behavior and constraints. |
-| `truncateLogs` | Document caller-visible behavior and constraints. |
-| `Log` | Document caller-visible behavior and constraints. |
+| `Loggable` | Protocol for a logging sink; requires `log(message:)` which may throw. |
+| `LogsStorage` | `Loggable` sub-protocol for persistent log stores: fetch, archive, remove, clear, size, and truncate logs. |
+| `PeraLogger` | Shared `ObservableObject` actor that fans out messages to registered loggers and manages the logs store. |
+| `LoggerError` | Error type raised when a logger fails to write (`unableToLog`); surfaced via the published `error`. |
+| `shared` | Singleton `PeraLogger` instance used app-wide for logging. |
+| `log` | Formats a message with a timestamp and forwards it to all registered loggers, capturing failures into `error`. |
+| `update` | Replaces the set of active loggers and the optional logs store. |
+| `createLogsFile` | Builds and returns an archive URL of stored logs for export, or nil if no store is configured. |
+| `deleteExportedLogsFile` | Removes the previously exported logs archive from the logs store. |
+| `clearLogs` | Clears all persisted logs in the configured store. |
+| `clearLogsIfExceedingSizeLimit` | Clears persisted logs only when their size exceeds the given byte limit (default 1,000,000). |
+| `truncateLogs` | Truncates persisted logs when the store determines truncation is needed. |
+| `Log` | Static convenience facade dispatching `log`, `clearLogs`, and `truncateLogs` to the shared `PeraLogger` actor. |
 
 ## Invariants
 
