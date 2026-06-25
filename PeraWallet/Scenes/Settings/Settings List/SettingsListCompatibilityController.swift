@@ -40,6 +40,8 @@ final class SettingsListCompatibilityController: SwiftUICompatibilityBaseViewCon
             open(.securitySettings, by: .push)
         case .contacts:
             open(.contacts, by: .push)
+        case .messages:
+            presentMessages()
         case .notifications:
             open(.notificationFilter, by: .push)
         case .walletConnect:
@@ -55,8 +57,21 @@ final class SettingsListCompatibilityController: SwiftUICompatibilityBaseViewCon
         }
     }
     
+    private func presentMessages() {
+        let accounts = session?.authenticatedUser?.accounts ?? []
+        guard let account = accounts.first(where: { $0.hdWalletAddressDetail != nil }) ?? accounts.first else {
+            bannerController?.presentErrorBanner(
+                title: String(localized: "title-error"),
+                message: "Add an account to use Messages."
+            )
+            return
+        }
+        let messagesScreen = AlgoChatMessagesViewController(account: account, configuration: configuration)
+        navigationController?.pushViewController(messagesScreen, animated: true)
+    }
+
     func performLogoutAction() {
-        
+
         let bottomWarningViewConfigurator = BottomWarningViewConfigurator(
             image: "icon-settings-logout".uiImage,
             title: String(localized: "settings-delete-data-title"),

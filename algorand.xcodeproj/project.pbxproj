@@ -158,6 +158,7 @@
 		2BD36E172682474800C57728 /* AlgorandSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD36E162682474800C57728 /* AlgorandSDKTests.swift */; };
 		2BEEBFA329A3D06000DDD988 /* WalletConnectV1SessionValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BEEBF9B29A3BD9900DDD988 /* WalletConnectV1SessionValidatorTests.swift */; };
 		2BEEBFA429A3D06500DDD988 /* WalletConnectV2SessionValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BEEBF9F29A3CD7800DDD988 /* WalletConnectV2SessionValidatorTests.swift */; };
+		3F23EF5E767FB240A35D93A1 /* AlgoChatMessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74B725AD5D94E727C3F674B /* AlgoChatMessagesViewController.swift */; };
 		481D31276E3D49F6582DAAA9 /* AlgoChatKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D0E598A5F978D44E0D01241 /* AlgoChatKit.framework */; };
 		547E6AE42E5F26DA00D82D13 /* ImportAccountsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547E6AE32E5F26D900D82D13 /* ImportAccountsHandler.swift */; };
 		547E6AE52E5F26DA00D82D13 /* ImportAccountsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547E6AE32E5F26D900D82D13 /* ImportAccountsHandler.swift */; };
@@ -7174,6 +7175,7 @@
 		59E6FFFD2E4A712500CCA99B /* PassphraseCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B65602425CE1DDD0028FE12 /* PassphraseCellViewModel.swift */; };
 		59E6FFFE2E4A712500CCA99B /* PassphraseVerifyCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B0E7CBC27E29F0200A3ECCB /* PassphraseVerifyCardViewModel.swift */; };
 		59E6FFFF2E4A712500CCA99B /* PassphraseVerifyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B0E7CC027E2A02300A3ECCB /* PassphraseVerifyViewModel.swift */; };
+		6BADDFD39C64DA2D27746AE7 /* CorvidChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 685E9383D44ED6C965795A15 /* CorvidChatService.swift */; };
 		8BF250042CB03A1E00D2297B /* dark-dots.json in Resources */ = {isa = PBXBuildFile; fileRef = 8BF250022CB03A1E00D2297B /* dark-dots.json */; };
 		8BF250052CB03A1E00D2297B /* light-dots.json in Resources */ = {isa = PBXBuildFile; fileRef = 8BF250032CB03A1E00D2297B /* light-dots.json */; };
 		8BF250062CB03A1E00D2297B /* dark-dots.json in Resources */ = {isa = PBXBuildFile; fileRef = 8BF250022CB03A1E00D2297B /* dark-dots.json */; };
@@ -8951,6 +8953,7 @@
 		59B1FE5D2E4B5DF400B8F6FB /* auth.request.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = auth.request.json; sourceTree = "<group>"; };
 		59B1FE622E4B68A100B8F6FB /* Config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Config.json; sourceTree = "<group>"; };
 		59B1FE632E4B68A400B8F6FB /* Config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Config.json; sourceTree = "<group>"; };
+		685E9383D44ED6C965795A15 /* CorvidChatService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CorvidChatService.swift; path = PeraWallet/Classes/Messaging/CorvidChatService.swift; sourceTree = "<group>"; };
 		8B00DD642C53E97B00D832DC /* IncomingASAsDetailSuccessResultScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingASAsDetailSuccessResultScreenViewModel.swift; sourceTree = "<group>"; };
 		8B00DD682C53EA8900D832DC /* AssetInboxSendSummaryWarningMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetInboxSendSummaryWarningMessage.swift; sourceTree = "<group>"; };
 		8B047C152C02548300851DF5 /* IncomingASAsRequestList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingASAsRequestList.swift; sourceTree = "<group>"; };
@@ -9122,6 +9125,7 @@
 		95FE4BCF27BFB81400D8C38E /* MoonPayParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonPayParams.swift; sourceTree = "<group>"; };
 		95FE4BD427C37F2B00D8C38E /* TapBuyAlgoTabEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapBuyAlgoTabEvent.swift; sourceTree = "<group>"; };
 		95FF7A1427B465CB00E00130 /* QRSendTransactionDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRSendTransactionDraft.swift; sourceTree = "<group>"; };
+		C74B725AD5D94E727C3F674B /* AlgoChatMessagesViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AlgoChatMessagesViewController.swift; path = PeraWallet/Classes/Messaging/AlgoChatMessagesViewController.swift; sourceTree = "<group>"; };
 		CBAD47442745510900C91946 /* AccountFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountFlow.swift; sourceTree = "<group>"; };
 		CBAD47492745595300C91946 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D400583B2EB8BE39009B7543 /* ALGAPI+Favorites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ALGAPI+Favorites.swift"; sourceTree = "<group>"; };
@@ -13976,6 +13980,8 @@
 				2B8BE4E5223924DB005D8565 /* Resources */,
 				F060AD0627D7634A00511615 /* Target Support Files */,
 				2B8BE4E42239248A005D8565 /* Support */,
+				685E9383D44ED6C965795A15 /* CorvidChatService.swift */,
+				C74B725AD5D94E727C3F674B /* AlgoChatMessagesViewController.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -31760,6 +31766,8 @@
 				59E60F012E4A71D000CCA99B /* AccountImportParameters.swift in Sources */,
 				D4F717302E547562008E63A3 /* ShimmerSUIView.swift in Sources */,
 				D4DD72ED2F4329FD003FBBCC /* ASADetailPageFragmentScreen.swift in Sources */,
+				6BADDFD39C64DA2D27746AE7 /* CorvidChatService.swift in Sources */,
+				3F23EF5E767FB240A35D93A1 /* AlgoChatMessagesViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
