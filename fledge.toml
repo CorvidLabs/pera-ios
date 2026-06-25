@@ -1,0 +1,32 @@
+# fledge.toml — project task definitions
+# Docs: https://github.com/CorvidLabs/fledge#task-runner
+
+[tasks]
+# Validate all module specs against the source code.
+spec-check = "specsync check --strict"
+
+# Coverage report: how much of PeraWalletCore is covered by specs.
+spec-coverage = "specsync coverage"
+
+# Show which specs have drifted behind their source files.
+spec-stale = "specsync stale"
+
+# Advisory only (NOT a CI gate): surfaces circular dependencies / coupling
+# in the single-target core. Expected to report existing cycles today.
+spec-deps = "specsync deps"
+
+# List every spec and its status.
+spec-list = "fledge spec list"
+
+[tasks.spec-score]
+cmd = "specsync score"
+description = "Quality-score every spec file (0-100)"
+
+[tasks.review]
+cmd = "fledge review"
+description = "AI code review of the current diff"
+
+# Composable pipeline: validate specs, then score them.
+[lanes.specs]
+description = "Full spec-sync gate: check (strict) then quality score"
+steps = ["spec-check", "spec-score"]
