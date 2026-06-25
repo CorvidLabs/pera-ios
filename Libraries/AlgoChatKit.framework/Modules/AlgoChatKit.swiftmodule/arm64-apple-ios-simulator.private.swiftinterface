@@ -1,0 +1,41 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.3.2 (swiftlang-6.3.2.1.108 clang-2100.1.1.101)
+// swift-module-flags: -target arm64-apple-ios16.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 6 -O -enable-experimental-feature DebugDescriptionMacro -module-name AlgoChatKit
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface -formal-cxx-interoperability-mode=off -interface-compiler-version 6.3.2
+import CryptoKit
+import Foundation
+import Swift
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+final public class ACKClient {
+  final public let address: Swift.String
+  public init(seed: Foundation.Data, network: AlgoChatKit.ACKNetwork) async throws
+  final public func publishKey() async throws
+  final public func messages(withPeer peer: Swift.String) async throws -> [AlgoChatKit.ACKMessage]
+  final public func send(_ body: Swift.String, toPeer peer: Swift.String) async throws
+  @objc deinit
+}
+public struct ACKMessage : Swift.Sendable, Swift.Identifiable {
+  public let id: Foundation.UUID
+  public let body: Swift.String
+  public let isOutgoing: Swift.Bool
+  public let timestamp: Foundation.Date
+  public init(body: Swift.String, isOutgoing: Swift.Bool, timestamp: Foundation.Date = Date())
+  public typealias ID = Foundation.UUID
+}
+public enum ACKNetwork : Swift.Sendable, Swift.Hashable {
+  case localnet
+  case testnet
+  case mainnet
+  public static func == (a: AlgoChatKit.ACKNetwork, b: AlgoChatKit.ACKNetwork) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum AlgoChatKit {
+  public static let version: Swift.String
+  public static let maxMessageBytes: Swift.Int
+  public static func messagingAddress(fromSeed seed: Foundation.Data) throws -> Swift.String
+}

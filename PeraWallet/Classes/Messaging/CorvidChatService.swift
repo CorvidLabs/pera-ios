@@ -29,11 +29,14 @@ public struct CorvidChatMessage: Sendable, Identifiable {
     public let id: UUID
     public let body: String
     public let isOutgoing: Bool
+    /// When the message was confirmed on-chain.
+    public let date: Date
 
-    public init(id: UUID, body: String, isOutgoing: Bool) {
+    public init(id: UUID, body: String, isOutgoing: Bool, date: Date) {
         self.id = id
         self.body = body
         self.isOutgoing = isOutgoing
+        self.date = date
     }
 }
 
@@ -108,7 +111,7 @@ public actor CorvidChatService {
         let client = try await ensureClient()
         do {
             let messages = try await client.messages(withPeer: peer)
-            return messages.map { CorvidChatMessage(id: $0.id, body: $0.body, isOutgoing: $0.isOutgoing) }
+            return messages.map { CorvidChatMessage(id: $0.id, body: $0.body, isOutgoing: $0.isOutgoing, date: $0.timestamp) }
         } catch {
             throw CorvidChatError.transport(error.localizedDescription)
         }
