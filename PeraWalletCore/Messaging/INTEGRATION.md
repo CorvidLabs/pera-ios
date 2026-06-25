@@ -4,6 +4,31 @@ An AlgoChat-style end-to-end encrypted, on-chain messaging feature. This slice i
 **feature-flagged off** (`enable_messaging`) and **not build-verified** — the SDK
 adapter and SPM wiring need an Xcode build. Three steps remain to ship it.
 
+## ⛔ Blocker: swift-crypto version conflict (must resolve first)
+
+Adding `swift-algochat` to `algorand.xcodeproj` today **fails package
+resolution**. Verified by wiring the package (AlgoChat + AlgoKit + Algorand) into
+`pera-wallet-core` via the `xcodeproj` gem and running
+`xcodebuild -resolvePackageDependencies`:
+
+```
+'swift-algorand' depends on 'swift-crypto' 3.0.0..<4.0.0
+'mnemonicswift' (Pera dep) depends on 'swift-crypto' 2.1.0..<3.0.0
+→ irreconcilable
+```
+
+MnemonicSwift's latest tag (2.2.5) still pins swift-crypto `<3.0.0`, so a version
+bump alone won't fix it. Resolution options (each an upstream/fork change, not an
+in-repo edit):
+1. Fork MnemonicSwift and relax its swift-crypto upper bound to `<4.0.0`
+   (Pera only uses its SHA/PBKDF paths, very likely 3.x-compatible), point Pera at the fork.
+2. Have swift-algorand/swift-algochat support swift-crypto 2.x.
+3. Replace MnemonicSwift with a swift-crypto-3.x-compatible mnemonic lib
+   (swift-algorand already ships `Mnemonic.encode/decode`).
+
+Until one of these lands, the feature stays flagged off and the package cannot be
+added. Everything else (code, derivation, protocol) is verified independently.
+
 ## 1. Add the swift-algochat package (Xcode — do NOT hand-edit project.pbxproj)
 
 In Xcode: **File ▸ Add Package Dependencies…**, enter
@@ -92,6 +117,7 @@ confirmed `conversations` / `conversation(with:)` / `refresh` / `send` /
 `Message.id/.content/.timestamp/.direction` — and surfaced the
 `Conversation.peerAddress → .participant` fix now applied here. What remains
 unverified is only the app build + the account/key bridge below.
+| Core sources compile vs real SDK | ✅ SwiftPM-verified (2 bugs fixed) |
 | Account/key bridge (derivation) | ✅ implemented + LocalNet-verified |
-| SPM package wiring | ⬜ Xcode step above |
-| `seedProvider` + Menu hook | ⬜ step 3 above (composition root) |
+| SPM package wiring | ⛔ blocked — swift-crypto 2.x/3.x conflict (see top) |
+| `seedProvider` + Menu hook | ⬜ step 3 (after the blocker is resolved) |
