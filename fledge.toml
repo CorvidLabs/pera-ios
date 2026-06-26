@@ -26,6 +26,10 @@ description = "Quality-score every spec file (0-100)"
 cmd = "fledge review"
 description = "AI code review of the current diff"
 
+[tasks.ui-smoke]
+cmd = "scripts/ci-uismoke.sh"
+description = "Headless XCUITest smoke test (Corvid surfaces) on a freshly-erased simulator"
+
 # Composable pipeline: validate specs, then score them.
 [lanes.specs]
 description = "Full spec-sync gate: check (strict) then quality score"
