@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0112A0191892E4FD1965A450 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE6746DF362394A57C3461C /* Foundation.framework */; };
 		10A77912DAF6269145B2165D /* AlgoChatKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D0E598A5F978D44E0D01241 /* AlgoChatKit.framework */; };
 		10B6BD306BDB754A4D6A3805 /* NevermoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71057AEA9282CD9B66C74B4A /* NevermoreViewController.swift */; };
 		174A0F3C28EF17FD00D44019 /* PasswordMigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174A0F3B28EF17FD00D44019 /* PasswordMigrationTests.swift */; };
@@ -7456,6 +7457,7 @@
 		F07F00732923C5E800901F07 /* pera-loader-purple-dark.json in Resources */ = {isa = PBXBuildFile; fileRef = F07F006F2923C5E800901F07 /* pera-loader-purple-dark.json */; };
 		F07F00742923C5E800901F07 /* pera-loader-purple-dark.json in Resources */ = {isa = PBXBuildFile; fileRef = F07F006F2923C5E800901F07 /* pera-loader-purple-dark.json */; };
 		F07F00752923C5E800901F07 /* pera-loader-purple-dark.json in Resources */ = {isa = PBXBuildFile; fileRef = F07F006F2923C5E800901F07 /* pera-loader-purple-dark.json */; };
+		F5DC5F54DD4952CEE9F0217D /* CorvidDemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54CF1898C6E6EACF735D15A /* CorvidDemoUITests.swift */; };
 		F8F909D57E14AC1D02E613FF /* NevermoreMembership.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9060A1353BEF4EADAF9D0809 /* NevermoreMembership.swift */; };
 		FF193FC4410EB1D5139D2DD3 /* AlgoChatKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1D0E598A5F978D44E0D01241 /* AlgoChatKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -7467,6 +7469,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 17BD4DEE2292F1260003E49A;
 			remoteInfo = "algorand-staging";
+		};
+		2DFE0A58B1BC02AB728A16F1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2B8BE4C622391C38005D8565 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2B8BE4CD22391C38005D8565;
+			remoteInfo = pera;
 		};
 		591635962E44D162002184C2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -8961,6 +8970,7 @@
 		59B1FE632E4B68A400B8F6FB /* Config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Config.json; sourceTree = "<group>"; };
 		685E9383D44ED6C965795A15 /* CorvidChatService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CorvidChatService.swift; path = PeraWallet/Classes/Messaging/CorvidChatService.swift; sourceTree = "<group>"; };
 		71057AEA9282CD9B66C74B4A /* NevermoreViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NevermoreViewController.swift; sourceTree = "<group>"; };
+		8AE6746DF362394A57C3461C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		8B00DD642C53E97B00D832DC /* IncomingASAsDetailSuccessResultScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingASAsDetailSuccessResultScreenViewModel.swift; sourceTree = "<group>"; };
 		8B00DD682C53EA8900D832DC /* AssetInboxSendSummaryWarningMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetInboxSendSummaryWarningMessage.swift; sourceTree = "<group>"; };
 		8B047C152C02548300851DF5 /* IncomingASAsRequestList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingASAsRequestList.swift; sourceTree = "<group>"; };
@@ -9034,6 +9044,7 @@
 		8BF2500B2CB06A5E00D2297B /* RecoverAccountsLoadingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoverAccountsLoadingScreen.swift; sourceTree = "<group>"; };
 		8BF2500C2CB06A5E00D2297B /* RecoverAccountsLoadingTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoverAccountsLoadingTheme.swift; sourceTree = "<group>"; };
 		8BF2500D2CB06A5E00D2297B /* RecoverAccountsLoadingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoverAccountsLoadingViewModel.swift; sourceTree = "<group>"; };
+		8E8ECE0F3B5CC25D26DE0E3F /* pera-uitests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "pera-uitests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9060A1353BEF4EADAF9D0809 /* NevermoreMembership.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NevermoreMembership.swift; sourceTree = "<group>"; };
 		95004BB327BBC61400AB2D9A /* NoContentViewTopAttachedTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoContentViewTopAttachedTheme.swift; sourceTree = "<group>"; };
 		9501BBD62757BD7000E2C3A7 /* SelectAssetViewControllerDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAssetViewControllerDataSource.swift; sourceTree = "<group>"; };
@@ -9133,6 +9144,7 @@
 		95FE4BCF27BFB81400D8C38E /* MoonPayParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonPayParams.swift; sourceTree = "<group>"; };
 		95FE4BD427C37F2B00D8C38E /* TapBuyAlgoTabEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapBuyAlgoTabEvent.swift; sourceTree = "<group>"; };
 		95FF7A1427B465CB00E00130 /* QRSendTransactionDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRSendTransactionDraft.swift; sourceTree = "<group>"; };
+		A54CF1898C6E6EACF735D15A /* CorvidDemoUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CorvidDemoUITests.swift; sourceTree = "<group>"; };
 		C74B725AD5D94E727C3F674B /* AlgoChatMessagesViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AlgoChatMessagesViewController.swift; path = PeraWallet/Classes/Messaging/AlgoChatMessagesViewController.swift; sourceTree = "<group>"; };
 		CBAD47442745510900C91946 /* AccountFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountFlow.swift; sourceTree = "<group>"; };
 		CBAD47492745595300C91946 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -11147,6 +11159,14 @@
 			files = (
 				59B1FE4A2E4B556D00B8F6FB /* pera_wallet_core.framework in Frameworks */,
 				59B1FE382E4B553A00B8F6FB /* AuthenticationServices.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E93BF9DF402971DD86958984 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0112A0191892E4FD1965A450 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13990,6 +14010,7 @@
 				2B8BE4E42239248A005D8565 /* Support */,
 				685E9383D44ED6C965795A15 /* CorvidChatService.swift */,
 				C74B725AD5D94E727C3F674B /* AlgoChatMessagesViewController.swift */,
+				D849B5D8F7A9482948E8EFAD /* pera-uitests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -14003,6 +14024,7 @@
 				591635922E44D162002184C2 /* pera_wallet_core.framework */,
 				59B1FC582E4B505E00B8F6FB /* autofill-extension.appex */,
 				59B1FE372E4B553A00B8F6FB /* autofill-extension-staging.appex */,
+				8E8ECE0F3B5CC25D26DE0E3F /* pera-uitests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -17974,6 +17996,14 @@
 			path = Nevermore;
 			sourceTree = "<group>";
 		};
+		32149C2E7C4749625C4A3AA9 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				8AE6746DF362394A57C3461C /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
 		543447742D53556C0080AF4D /* View Coordinators */ = {
 			isa = PBXGroup;
 			children = (
@@ -20077,6 +20107,7 @@
 			children = (
 				2B0F5F5A24EAECB700DA22A6 /* Crypto.framework */,
 				59B1F86D2E4A75B000B8F6FB /* AuthenticationServices.framework */,
+				32149C2E7C4749625C4A3AA9 /* iOS */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -23746,6 +23777,15 @@
 			path = SelectedAccountPreview;
 			sourceTree = "<group>";
 		};
+		D849B5D8F7A9482948E8EFAD /* pera-uitests */ = {
+			isa = PBXGroup;
+			children = (
+				A54CF1898C6E6EACF735D15A /* CorvidDemoUITests.swift */,
+			);
+			name = "pera-uitests";
+			path = "pera-uitests";
+			sourceTree = "<group>";
+		};
 		F010635128AAEADD00AB6873 /* ASAProfileView */ = {
 			isa = PBXGroup;
 			children = (
@@ -24844,6 +24884,24 @@
 			productReference = 59B1FE372E4B553A00B8F6FB /* autofill-extension-staging.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		61FCE53B29E1D0EFDD82DCC6 /* pera-uitests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 14F390EE6C39B653F854604E /* Build configuration list for PBXNativeTarget "pera-uitests" */;
+			buildPhases = (
+				000B153D05D115AAAEBB4A95 /* Sources */,
+				E93BF9DF402971DD86958984 /* Frameworks */,
+				D097E451A987C24E89862EC2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				94929067D23BE3ADED0895DF /* PBXTargetDependency */,
+			);
+			name = "pera-uitests";
+			productName = "pera-uitests";
+			productReference = 8E8ECE0F3B5CC25D26DE0E3F /* pera-uitests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -24882,6 +24940,9 @@
 					};
 					59B1FE362E4B553A00B8F6FB = {
 						CreatedOnToolsVersion = 16.2;
+					};
+					61FCE53B29E1D0EFDD82DCC6 = {
+						TestTargetID = 2B8BE4CD22391C38005D8565;
 					};
 				};
 			};
@@ -24926,6 +24987,7 @@
 				591635912E44D162002184C2 /* pera-wallet-core */,
 				59B1FC572E4B505E00B8F6FB /* autofill-extension */,
 				59B1FE362E4B553A00B8F6FB /* autofill-extension-staging */,
+				61FCE53B29E1D0EFDD82DCC6 /* pera-uitests */,
 			);
 		};
 /* End PBXProject section */
@@ -25235,6 +25297,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D097E451A987C24E89862EC2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -25296,6 +25365,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		000B153D05D115AAAEBB4A95 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F5DC5F54DD4952CEE9F0217D /* CorvidDemoUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		17BD4DF02292F1260003E49A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -32518,6 +32595,12 @@
 			target = 591635912E44D162002184C2 /* pera-wallet-core */;
 			targetProxy = 59B1FE4C2E4B556D00B8F6FB /* PBXContainerItemProxy */;
 		};
+		94929067D23BE3ADED0895DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = pera;
+			target = 2B8BE4CD22391C38005D8565 /* pera */;
+			targetProxy = 2DFE0A58B1BC02AB728A16F1 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -33323,6 +33406,71 @@
 			};
 			name = "App Store";
 		};
+		78BD5ED4ABC7063AA92B4C8F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.algorandllc.algorand-uitests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = pera;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		9648F1CEB69CC700968309C2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.algorandllc.algorand-uitests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = pera;
+			};
+			name = Debug;
+		};
+		C2FA64C5BAC0A44C2F0D3BDF /* App Store */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.algorandllc.algorand-uitests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = pera;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = "App Store";
+		};
 		EC6B733422541CA8006D146B /* App Store */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2B3BC385266FEBCD007D7107 /* Config.xcconfig */;
@@ -33418,6 +33566,16 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		14F390EE6C39B653F854604E /* Build configuration list for PBXNativeTarget "pera-uitests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				78BD5ED4ABC7063AA92B4C8F /* Release */,
+				9648F1CEB69CC700968309C2 /* Debug */,
+				C2FA64C5BAC0A44C2F0D3BDF /* App Store */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		17BD4F212292F1260003E49A /* Build configuration list for PBXNativeTarget "pera-staging" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
