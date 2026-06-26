@@ -23,6 +23,7 @@ enum MenuOption: Equatable {
     case buyAlgo
     case buy
     case stake
+    case messages
     case receive
     case inviteFriends
     
@@ -38,6 +39,8 @@ enum MenuOption: Equatable {
             return String(localized: "quick-actions-buy-algo-title")
         case .buy:
             return String(localized: "title-buy-gift-card")
+        case .messages:
+            return "Messages"
         case .receive:
             return String(localized: "quick-actions-receive-title")
         case .inviteFriends:
@@ -73,6 +76,8 @@ enum MenuOption: Equatable {
             return UIImage(named: "icon-menu-buy-algo")
         case .buy:
             return UIImage(named: "icon-menu-buy-gift-card")
+        case .messages:
+            return UIImage(systemName: "bubble.left.and.bubble.right.fill")
         case .receive:
             return UIImage(named: "icon-menu-receive")
         case .inviteFriends:

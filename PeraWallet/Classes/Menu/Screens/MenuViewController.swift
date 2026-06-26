@@ -96,7 +96,8 @@ final class MenuViewController: BaseViewController {
         
         baseOptions.append(nftsOption)
         
-        baseOptions.append(contentsOf: [.buy, .stake, .receive, .inviteFriends])
+        // Corvid Nevermore — surface AlgoChat (Messages); drop Bidali gift cards + staking.
+        baseOptions.append(contentsOf: [.messages, .receive, .inviteFriends])
         
         if showCards {
             baseOptions.append(cardsOption)
@@ -216,7 +217,7 @@ extension MenuViewController: UICollectionViewDelegateFlowLayout {
             switch option {
             case .cards:
                 return CGSize(width: width, height: theme.cardsCellHeight)
-            case .nfts, .transfer, .buyAlgo, .buy, .receive, .stake, .inviteFriends:
+            case .nfts, .transfer, .buyAlgo, .buy, .receive, .stake, .messages, .inviteFriends:
                 return CGSize(width: width, height: theme.cellHeight)
             }
         }
@@ -241,6 +242,8 @@ extension MenuViewController: UICollectionViewDelegate {
             case .buy:
                 openBuyGiftCardsWithBidali()
                 analytics.track(.recordMenuScreen(type: .tapBuyAlgo))
+            case .messages:
+                openMessages()
             case .receive:
                 receiveTransactionFlowCoordinator.launch()
                 analytics.track(.recordMenuScreen(type: .tapReceive))
@@ -255,6 +258,22 @@ extension MenuViewController: UICollectionViewDelegate {
         }
         
         fatalError("Index path is out of bounds")
+    }
+}
+
+extension MenuViewController {
+    /// Opens the AlgoChat (Messages) screen for the first HD-wallet account.
+    private func openMessages() {
+        let accounts = session?.authenticatedUser?.accounts ?? []
+        guard let account = accounts.first(where: { $0.hdWalletAddressDetail != nil }) ?? accounts.first else {
+            bannerController?.presentErrorBanner(
+                title: String(localized: "title-error"),
+                message: "Add an account to use Messages."
+            )
+            return
+        }
+        let messagesScreen = AlgoChatMessagesViewController(account: account, configuration: configuration)
+        navigationController?.pushViewController(messagesScreen, animated: true)
     }
 }
 
@@ -276,7 +295,7 @@ extension MenuViewController: UICollectionViewDataSource {
                 cell.bindData(option)
                 return cell
 
-            case .nfts, .transfer, .buyAlgo, .buy, .receive, .stake, .inviteFriends:
+            case .nfts, .transfer, .buyAlgo, .buy, .receive, .stake, .messages, .inviteFriends:
                 let cell = collectionView.dequeue(MenuListViewCell.self, at: indexPath)
                 cell.bindData(option)
                 return cell
