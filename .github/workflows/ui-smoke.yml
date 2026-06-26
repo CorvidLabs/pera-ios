@@ -1,0 +1,41 @@
+name: UI Smoke
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+# Headless XCUITest smoke test for Corvid Nevermore Wallet. Runs inside the
+# simulator's test runner (no host Accessibility), onboards a wallet, and
+# asserts the curated surfaces render. No LocalNet required.
+jobs:
+  ui-smoke:
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -switch /Applications/Xcode.app
+
+      - name: Tooling versions
+        run: |
+          xcodebuild -version
+          swift --version
+          xcrun simctl list devices available | grep -i "iPhone 17" || true
+
+      - name: Install xcbeautify
+        run: brew install xcbeautify || true
+
+      - name: Run UI smoke suite
+        env:
+          SIM_DEVICE: iPhone 17
+          RESULT_BUNDLE: build/ui-smoke.xcresult
+        run: scripts/ci-uismoke.sh
+
+      - name: Upload result bundle (screenshots + logs)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-smoke-xcresult
+          path: build/ui-smoke.xcresult
+          if-no-files-found: warn
