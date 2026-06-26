@@ -28,7 +28,7 @@ final class AlgoChatMessagesViewController: BaseViewController {
     // MARK: - Properties
 
     private let account: AccountInformation
-    private let service: CorvidChatService?
+    private var service: CorvidChatService?
 
     private var messages: [CorvidChatMessage] = []
     private var myAddress: String?
@@ -81,8 +81,23 @@ final class AlgoChatMessagesViewController: BaseViewController {
 
     init(account: AccountInformation, configuration: ViewControllerConfiguration) {
         self.account = account
-        self.service = CorvidChatService(account: account)
+        // The service is created lazily off the main thread in `bootstrap()` —
+        // its init derives a BIP39 seed (PBKDF2, 2048 rounds), which would jank
+        // the screen if done here on the main thread.
+        self.service = nil
         super.init(configuration: configuration)
+    }
+
+    /// Derives the messaging service off the main thread (heavy seed derivation).
+    private static func makeService(walletId: String?) async -> CorvidChatService? {
+        await Task.detached(priority: .userInitiated) {
+            guard
+                let walletId,
+                let wallet = try? HDWalletStorage().wallet(id: walletId),
+                let seed = HDWalletUtils.generateSeed(fromEntropy: wallet.entropy)
+            else { return nil }
+            return CorvidChatService(seed: seed)
+        }.value
     }
 
     // MARK: - Lifecycle
@@ -327,13 +342,17 @@ final class AlgoChatMessagesViewController: BaseViewController {
 
     private func bootstrap() {
         updateEmptyState()
-        guard let service else {
-            statusLabel.text = "This account can't message — no HD-wallet seed."
-            return
-        }
         statusLabel.text = "Connecting to AlgoChat on LocalNet…"
+        let walletId = account.hdWalletAddressDetail?.walletId
         Task { [weak self] in
             guard let self else { return }
+            // Build the service off the main thread (seed derivation is heavy).
+            let service = await Self.makeService(walletId: walletId)
+            await MainActor.run { self.service = service }
+            guard let service else {
+                await MainActor.run { self.statusLabel.text = "This account can't message — no HD-wallet seed." }
+                return
+            }
             do {
                 let address = try await service.messagingAddress()
                 await MainActor.run {
